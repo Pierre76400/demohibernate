@@ -48,8 +48,6 @@ public class ProfDaoTest {
 			}
 			entityManager.persist(c);
 		}
-		entityManager.getEntityManagerFactory().getProperties()
-				.put("format_sql", "true");
 	}
 
 	@Test
