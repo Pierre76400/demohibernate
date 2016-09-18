@@ -11,7 +11,7 @@
 	</Root>
         
     <Logger name="org.hibernate" level="error"/>
-    <Logger name="org.hibernate.SQL" level="debug"/>
+    <Logger name="org.hibernate.SQL" level=info/>
     
     </Loggers>
     
