@@ -1,4 +1,4 @@
-package fr.softeam;
+package fr.softeam.provisoire;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
