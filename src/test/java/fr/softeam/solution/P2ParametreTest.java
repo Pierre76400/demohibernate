@@ -2,14 +2,27 @@ package fr.softeam.solution;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.Level;
+import fr.softeam.dao.ProfesseurDao;
 import fr.softeam.model.Professeur;
 import fr.softeam.util.CommonLanceurTest;
 
-public class P1LogTest extends CommonLanceurTest {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@Transactional
+public class P2ParametreTest extends CommonLanceurTest {
+
+	@Autowired
+	private ProfesseurDao professeurDao;
 
 	@Test
 	@SuppressWarnings("unchecked")
