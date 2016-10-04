@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 import fr.softeam.model.Professeur;
-import fr.softeam.util.CommonLanceurTest;
+import fr.softeam.util.AbstractCommonLanceurSansLogTest;
 
-public class P1LogTest extends CommonLanceurTest {
+public class P1LogTest extends AbstractCommonLanceurSansLogTest {
 
 	@Test
 	@SuppressWarnings("unchecked")

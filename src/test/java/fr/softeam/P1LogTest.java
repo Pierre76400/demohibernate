@@ -12,12 +12,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import fr.softeam.dao.ProfesseurDao;
 import fr.softeam.model.Professeur;
-import fr.softeam.util.CommonLanceurTest;
+import fr.softeam.util.AbstractCommonLanceurSansLogTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class P1LogTest extends CommonLanceurTest {
+public class P1LogTest extends AbstractCommonLanceurSansLogTest {
 
 	@Autowired
 	private ProfesseurDao professeurDao;
