@@ -1,9 +1,12 @@
 package fr.softeam.solution;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,45 +22,114 @@ import fr.softeam.util.AbstractCommonLanceurTest;
 @Transactional
 public class P2ParametreTest extends AbstractCommonLanceurTest {
 
-    @Autowired
-    private ProfesseurDao professeurDao;
+	@Autowired
+	private ProfesseurDao professeurDao;
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void afficherListeDesDUnProfesseurTest() {
-        String nomProfesseur = "Professeur1";
-        List<Classe> classes = getEntityManager().createQuery("from Classe c left join fetch c.professeur where c.professeur.nom='"
-                                                                      + nomProfesseur + "'").getResultList();
-        System.out.println("Liste des classes du professeur: " + nomProfesseur);
+	@Test
+	@SuppressWarnings("unchecked")
+	public void afficherListeDesDUnProfesseurTest() {
+		String nomProfesseur = "Professeur1";
+		List<Classe> classes = getEntityManager().createQuery(
+				"from Classe c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
+				.getResultList();
+		System.out.println("Liste des classes du professeur: " + nomProfesseur);
 
-        for (Classe pro : classes) {
-            System.out.println(" - " + pro.getNom());
-        }
-    }
+		for (Classe pro : classes) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void afficherListeDesDUnProfesseur_Probleme_Test() {
-        String nomProfesseur = "Professeur'";
-        List<Classe> classes = getEntityManager().createQuery("from Classe c left join fetch c.professeur where c.professeur.nom='"
-                                                                      + nomProfesseur + "'").getResultList();
-        System.out.println("Liste des classes du professeur: " + nomProfesseur);
+	@Test
+	@SuppressWarnings("unchecked")
+	public void afficherListeDesDUnProfesseur_Probleme_Test() {
+		String nomProfesseur = "'";
 
-        for (Classe pro : classes) {
-            System.out.println(" - " + pro.getNom());
-        }
-    }
+		List<Classe> classes = getEntityManager().createQuery(
+				"from Classe c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
+				.getResultList();
+		System.out.println("Liste des classes du professeur: " + nomProfesseur);
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void afficherListeDesDUnProfesseur_ProblemePlusGrave_Test() {
-        String nomProfesseur = "' or ''='";
-        List<Classe> classes = getEntityManager().createQuery("from Classe c left join fetch c.professeur where c.professeur.nom='"
-                                                                      + nomProfesseur + "'").getResultList();
-        System.out.println("Liste des classes du professeur: " + nomProfesseur);
+		for (Classe pro : classes) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
 
-        for (Classe pro : classes) {
-            System.out.println(" - " + pro.getNom());
-        }
-    }
+	@Test
+	@SuppressWarnings("unchecked")
+	public void afficherListeDesDUnProfesseur_ProblemePlusGrave_Test() {
+		String nomProfesseur = "' or ''='";
+		List<Classe> classes = getEntityManager().createQuery(
+				"from Classe c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
+				.getResultList();
+		System.out.println("Liste des classes du professeur: " + nomProfesseur);
+
+		for (Classe pro : classes) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void afficherListeDesDUnProfesseur_soluce() {
+		String nomProfesseur = "' or ''='";
+		List<Classe> classes = getEntityManager()
+				.createQuery("from Classe c left join fetch c.professeur where c.professeur.nom=:nomProfesseur")
+				.setParameter("nomProfesseur", nomProfesseur).getResultList();
+		System.out.println("Liste des classes du professeur: " + nomProfesseur);
+
+		for (Classe pro : classes) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void paramListe() {
+		List<String> nomProfesseurs = new ArrayList<String>();
+		nomProfesseurs.add("Professeur1");
+		nomProfesseurs.add("Professeur2");
+
+		String queryHql = "from Classe c left join fetch c.professeur where c.professeur.nom in(";
+
+		for (String s : nomProfesseurs) {
+			queryHql = queryHql + "?,";
+		}
+
+		queryHql = queryHql.substring(0, queryHql.length() - 1);
+		queryHql += ")";
+
+		Query query = getEntityManager().createQuery(queryHql);
+
+		int posParam = 1;
+
+		for (String s : nomProfesseurs) {
+			query.setParameter(posParam++, s);
+		}
+
+		List<Classe> classes = query.getResultList();
+
+		System.out.println("Liste des classes des professeurs: " + StringUtils.join(nomProfesseurs, ","));
+
+		for (Classe pro : classes) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void paramListe_soluce() {
+		List<String> nomProfesseurs = new ArrayList<String>();
+		nomProfesseurs.add("Professeur1");
+		nomProfesseurs.add("Professeur2");
+
+		List<Classe> classes = getEntityManager()
+				.createQuery("from Classe c left join fetch c.professeur where c.professeur.nom  in (:nomProfesseurs)")
+				.setParameter("nomProfesseurs", nomProfesseurs).getResultList();
+
+		System.out.println("Liste des classes des professeurs: " + StringUtils.join(nomProfesseurs, ","));
+
+		for (Classe pro : classes) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
 }
