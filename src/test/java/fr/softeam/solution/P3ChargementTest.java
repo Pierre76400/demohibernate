@@ -1,16 +1,21 @@
 package fr.softeam.solution;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import ch.qos.logback.classic.Level;
 import fr.softeam.dao.ProfesseurDao;
-import fr.softeam.model.Classe;
-import fr.softeam.model.Eleve;
+import fr.softeam.model.variante.ClasseP3;
+import fr.softeam.model.variante.EleveP3;
+import fr.softeam.model.variante.ProfesseurP3;
 import fr.softeam.util.AbstractCommonLanceurTest;
 
 @RunWith(SpringRunner.class)
@@ -25,14 +30,68 @@ public class P3ChargementTest extends AbstractCommonLanceurTest {
 	@SuppressWarnings("unchecked")
 	public void afficherListeDesElevesDUnProfesseurTest() {
 		String nomProfesseur = "Professeur1";
-		Classe classe = (Classe) getEntityManager().createQuery(
-				"from Classe c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
+		ClasseP3 classe = (ClasseP3) getEntityManager().createQuery(
+				"from ClasseP3 c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
 				.getSingleResult();
-		System.out.println("Liste des éléves du professeur: " + nomProfesseur);
+		System.out.println("Liste des éléves du professeur " + nomProfesseur + ": ");
 
-		for (Eleve pro : classe.getEleves()) {
+		// getEntityManager().createQuery("from ClasseP3").getResultList();
+		for (EleveP3 pro : classe.getEleves()) {
 			System.out.println(" - " + pro.getNom());
 		}
 	}
 
+	@Test
+	@SuppressWarnings("unchecked")
+	public void afficherListeDesElevesDUnProfesseurSolutionTest() {
+		String nomProfesseur = "Professeur1";
+		ClasseP3 classe = (ClasseP3) getEntityManager().createQuery(
+				"from ClasseP3 c left join fetch c.professeur left join fetch c.eleves where c.professeur.nom='"
+						+ nomProfesseur + "'").getSingleResult();
+		System.out.println("Liste des éléves du professeur: " + nomProfesseur);
+
+		for (EleveP3 pro : classe.getEleves()) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void afficherLesClassesDUnProfesseurTest() {
+		String nomProfesseur = "Professeur1";
+		List<ClasseP3> classes = getEntityManager().createQuery(
+				"from ClasseP3 c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
+				.getResultList();
+		System.out.println("Liste des classes du professeur: " + nomProfesseur);
+
+		for (ClasseP3 pro : classes) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
+
+	@Override
+	public void init() {
+		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
+		int cptEleve = 0;
+		for (int i = 0; i < 6; i++) {
+			ClasseP3 c = new ClasseP3();
+			c.setNom("classe" + i);
+
+			ProfesseurP3 p = new ProfesseurP3();
+			p.setNom("Professeur" + i);
+
+			c.setProfesseur(p);
+
+			// c.setEleves();
+			for (int j = 0; j < 5; j++) {
+				EleveP3 e = new EleveP3();
+				e.setNom("eleve" + cptEleve++);
+				c.getEleves().add(e);
+			}
+			getEntityManager().persist(c);
+		}
+
+		getEntityManager().clear();
+		getEntityManager().flush();
+	}
 }
