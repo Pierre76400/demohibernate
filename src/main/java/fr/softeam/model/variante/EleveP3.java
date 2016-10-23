@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class EleveP3 {
@@ -18,6 +19,9 @@ public class EleveP3 {
 
 	@Column(name = "prenom")
 	private String prenom;
+
+	@ManyToOne
+	private ClasseP3 classe;
 
 	public long getId() {
 		return id;
@@ -41,6 +45,14 @@ public class EleveP3 {
 
 	public void setPrenom(String prenom) {
 		this.prenom = prenom;
+	}
+
+	public ClasseP3 getClasse() {
+		return classe;
+	}
+
+	public void setClasse(ClasseP3 classe) {
+		this.classe = classe;
 	}
 
 }

@@ -31,14 +31,24 @@ public class P3ChargementTest extends AbstractCommonLanceurTest {
 	public void afficherListeDesElevesDUnProfesseurTest() {
 		String nomProfesseur = "Professeur1";
 		ClasseP3 classe = (ClasseP3) getEntityManager().createQuery(
-				"from ClasseP3 c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
+				"select c,c.professeur from ClasseP3 c where c.professeur.nom='" + nomProfesseur + "'")
 				.getSingleResult();
+
+		// List<EleveP3> l =
+		// getEntityManager().createQuery("from EleveP3").getResultList();
 		System.out.println("Liste des éléves du professeur " + nomProfesseur + ": ");
 
 		// getEntityManager().createQuery("from ClasseP3").getResultList();
 		for (EleveP3 pro : classe.getEleves()) {
 			System.out.println(" - " + pro.getNom());
 		}
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void afficherListeDesElevesDUnProfesseurTest_SolutionPasPropre() {
+		// Test identique au précédent mais passer la relation
+		// ClasseP3.setEleves en eager
 	}
 
 	@Test
@@ -71,7 +81,6 @@ public class P3ChargementTest extends AbstractCommonLanceurTest {
 
 	@Override
 	public void init() {
-		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
 		int cptEleve = 0;
 		for (int i = 0; i < 6; i++) {
 			ClasseP3 c = new ClasseP3();
@@ -86,12 +95,13 @@ public class P3ChargementTest extends AbstractCommonLanceurTest {
 			for (int j = 0; j < 5; j++) {
 				EleveP3 e = new EleveP3();
 				e.setNom("eleve" + cptEleve++);
-				c.getEleves().add(e);
+				c.addEleve(e);
 			}
 			getEntityManager().persist(c);
 		}
 
 		getEntityManager().clear();
 		getEntityManager().flush();
+		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
 	}
 }

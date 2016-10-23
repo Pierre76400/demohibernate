@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -27,8 +26,9 @@ public class ClasseP3 {
 	@ManyToOne(cascade = CascadeType.ALL)
 	private ProfesseurP3 professeur;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "id_classe")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "classe", fetch = FetchType.EAGER)
+	// @Fetch(FetchMode.JOIN)
+	// @JoinColumn(name = "id_classe")
 	private Set<EleveP3> eleves = new HashSet<EleveP3>();
 
 	public long getId() {
@@ -63,4 +63,13 @@ public class ClasseP3 {
 		this.eleves = eleves;
 	}
 
+	public void addEleve(EleveP3 eleve) {
+		eleves.add(eleve);
+		eleve.setClasse(this);
+	}
+
+	public void removeEleve(EleveP3 eleve) {
+		eleve.setClasse(null);
+		this.eleves.remove(eleve);
+	}
 }
