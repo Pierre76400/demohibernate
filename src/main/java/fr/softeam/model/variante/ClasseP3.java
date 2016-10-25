@@ -26,7 +26,7 @@ public class ClasseP3 {
 	@ManyToOne(cascade = CascadeType.ALL)
 	private ProfesseurP3 professeur;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "classe", fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "classe", fetch = FetchType.LAZY)
 	// @Fetch(FetchMode.JOIN)
 	// @JoinColumn(name = "id_classe")
 	private Set<EleveP3> eleves = new HashSet<EleveP3>();
