@@ -27,8 +27,6 @@ public class ClasseP3 {
 	private ProfesseurP3 professeur;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "classe", fetch = FetchType.LAZY)
-	// @Fetch(FetchMode.JOIN)
-	// @JoinColumn(name = "id_classe")
 	private Set<EleveP3> eleves = new HashSet<EleveP3>();
 
 	public long getId() {

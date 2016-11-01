@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -23,7 +24,7 @@ public class Classe {
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Professeur professeur;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "classe", fetch = FetchType.LAZY)
 	private Set<Eleve> eleves;
 
 	public long getId() {
@@ -58,4 +59,13 @@ public class Classe {
 		this.eleves = eleves;
 	}
 
+	public void addEleve(Eleve eleve) {
+		eleves.add(eleve);
+		eleve.setClasse(this);
+	}
+
+	public void removeEleve(Eleve eleve) {
+		eleve.setClasse(null);
+		this.eleves.remove(eleve);
+	}
 }

@@ -2,8 +2,12 @@ package fr.softeam.solution;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
@@ -16,29 +20,47 @@ import fr.softeam.dao.ProfesseurDao;
 import fr.softeam.model.variante.ClasseP3;
 import fr.softeam.model.variante.EleveP3;
 import fr.softeam.model.variante.ProfesseurP3;
-import fr.softeam.util.AbstractCommonLanceurTest;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Transactional
-public class P3ChargementTest extends AbstractCommonLanceurTest {
+public class P3ChargementTest {
 
 	@Autowired
 	private ProfesseurDao professeurDao;
 
+	@Autowired
+	private EntityManagerFactory entityManagerFactory;
+
 	@Test
 	@SuppressWarnings("unchecked")
 	public void afficherListeDesElevesDUnProfesseurTest() {
-		String nomProfesseur = "Professeur1";
-		ClasseP3 classe = (ClasseP3) getEntityManager().createQuery(
-				"select c,c.professeur from ClasseP3 c where c.professeur.nom='" + nomProfesseur + "'")
-				.getSingleResult();
 
-		// List<EleveP3> l =
-		// getEntityManager().createQuery("from EleveP3").getResultList();
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		String nomProfesseur = "Professeur1";
+		ClasseP3 classe = null;
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			classe = (ClasseP3) entityManager.createQuery(
+					"from ClasseP3 c where c.professeur.nom='" + nomProfesseur + "'").getSingleResult();
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
 		System.out.println("Liste des éléves du professeur " + nomProfesseur + ": ");
 
-		// getEntityManager().createQuery("from ClasseP3").getResultList();
 		for (EleveP3 pro : classe.getEleves()) {
 			System.out.println(" - " + pro.getNom());
 		}
@@ -46,19 +68,68 @@ public class P3ChargementTest extends AbstractCommonLanceurTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void afficherListeDesElevesDUnProfesseurTest_SolutionPasPropre() {
-		// Test identique au précédent mais passer la relation
-		// ClasseP3.setEleves en eager
+	public void afficherListeDesElevesDUnProfesseurTest_sansErreurOptionHibernate() {
+		// Passer la relation professeurP3.eleves à eager
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		String nomProfesseur = "Professeur1";
+		ClasseP3 classe = null;
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			classe = (ClasseP3) entityManager.createQuery(
+					"from ClasseP3 c where c.professeur.nom='" + nomProfesseur + "'").getSingleResult();
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		System.out.println("Liste des éléves du professeur " + nomProfesseur + ": ");
+
+		for (EleveP3 pro : classe.getEleves()) {
+			System.out.println(" - " + pro.getNom());
+		}
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void afficherListeDesElevesDUnProfesseurSolutionTest() {
+	public void afficherListeDesElevesDUnProfesseurTest_sansErreurEager() {
+		// Passer la relation professeurP3.eleves à eager
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
 		String nomProfesseur = "Professeur1";
-		ClasseP3 classe = (ClasseP3) getEntityManager().createQuery(
-				"from ClasseP3 c left join fetch c.professeur left join fetch c.eleves where c.professeur.nom='"
-						+ nomProfesseur + "'").getSingleResult();
-		System.out.println("Liste des éléves du professeur: " + nomProfesseur);
+		ClasseP3 classe = null;
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			classe = (ClasseP3) entityManager.createQuery(
+					"from ClasseP3 c where c.professeur.nom='" + nomProfesseur + "'").getSingleResult();
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		System.out.println("Liste des éléves du professeur " + nomProfesseur + ": ");
 
 		for (EleveP3 pro : classe.getEleves()) {
 			System.out.println(" - " + pro.getNom());
@@ -69,39 +140,117 @@ public class P3ChargementTest extends AbstractCommonLanceurTest {
 	@SuppressWarnings("unchecked")
 	public void afficherLesClassesDUnProfesseurTest() {
 		String nomProfesseur = "Professeur1";
-		List<ClasseP3> classes = getEntityManager().createQuery(
-				"from ClasseP3 c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
-				.getResultList();
-		System.out.println("Liste des classes du professeur: " + nomProfesseur);
+		List<ClasseP3> classes = null;
 
+		// Passer la relation professeurP3.eleves à eager
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			classes = entityManager.createQuery(
+					"from ClasseP3 c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
+					.getResultList();
+			System.out.println("Liste des classes du professeur: " + nomProfesseur);
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
 		for (ClasseP3 pro : classes) {
 			System.out.println(" - " + pro.getNom());
 		}
 	}
 
-	@Override
-	public void init() {
-		int cptEleve = 0;
-		for (int i = 0; i < 6; i++) {
-			ClasseP3 c = new ClasseP3();
-			c.setNom("classe" + i);
+	@Test
+	@SuppressWarnings("unchecked")
+	public void afficherListeDesElevesDUnProfesseurTest_solution() {
 
-			ProfesseurP3 p = new ProfesseurP3();
-			p.setNom("Professeur" + i);
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		String nomProfesseur = "Professeur1";
+		ClasseP3 classe = null;
 
-			c.setProfesseur(p);
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
 
-			// c.setEleves();
-			for (int j = 0; j < 5; j++) {
-				EleveP3 e = new EleveP3();
-				e.setNom("eleve" + cptEleve++);
-				c.addEleve(e);
+			classe = (ClasseP3) entityManager.createQuery(
+					"from ClasseP3 c " + "join fetch c.eleves where c.professeur.nom='" + nomProfesseur + "'")
+					.getSingleResult();
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
 			}
-			getEntityManager().persist(c);
 		}
 
-		getEntityManager().clear();
-		getEntityManager().flush();
+		System.out.println("Liste des éléves du professeur " + nomProfesseur + ": ");
+
+		for (EleveP3 pro : classe.getEleves()) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
+
+	@Before
+	public void init() {
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			int cptEleve = 0;
+			for (int i = 0; i < 6; i++) {
+				ClasseP3 c = new ClasseP3();
+				c.setNom("classe" + i);
+
+				ProfesseurP3 p = new ProfesseurP3();
+				p.setNom("Professeur" + i);
+
+				c.setProfesseur(p);
+
+				// c.setEleves();
+				for (int j = 0; j < 5; j++) {
+					EleveP3 e = new EleveP3();
+					e.setNom("eleve" + cptEleve++);
+					c.addEleve(e);
+				}
+				entityManager.persist(c);
+			}
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
+	}
+
+	@After
+	public void end() {
+
+		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.ERROR);
+		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.type")).setLevel(Level.ERROR);
 	}
 }

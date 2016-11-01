@@ -22,47 +22,47 @@ import fr.softeam.model.Professeur;
 @SpringBootTest
 @Transactional
 public abstract class AbstractCommonLanceurSansLogTest {
-    @Autowired
-    private EntityManager entityManager;
+	@Autowired
+	private EntityManager entityManager;
 
-    @Before
-    public void init() {
-        int cptEleve = 0;
-        for (int i = 0; i < 6; i++) {
-            Classe c = new Classe();
-            c.setNom("classe" + i);
+	@Before
+	public void init() {
+		int cptEleve = 0;
+		for (int i = 0; i < 6; i++) {
+			Classe c = new Classe();
+			c.setNom("classe" + i);
 
-            Professeur p = new Professeur();
-            p.setNom("Professeur" + i);
+			Professeur p = new Professeur();
+			p.setNom("Professeur" + i);
 
-            c.setProfesseur(p);
+			c.setProfesseur(p);
 
-            c.setEleves(new HashSet<Eleve>());
-            for (int j = 0; j < 25; j++) {
-                Eleve e = new Eleve();
-                e.setNom("eleve" + cptEleve++);
-                c.getEleves().add(e);
-            }
-            entityManager.persist(c);
-        }
+			c.setEleves(new HashSet<Eleve>());
+			for (int j = 0; j < 25; j++) {
+				Eleve e = new Eleve();
+				e.setNom("eleve" + cptEleve++);
+				c.addEleve(e);
+			}
+			entityManager.persist(c);
+		}
 
-        entityManager.clear();
-        entityManager.flush();
-    }
+		entityManager.clear();
+		entityManager.flush();
+	}
 
-    @After
-    public void end() {
+	@After
+	public void end() {
 
-        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.ERROR);
-        ((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.type")).setLevel(Level.ERROR);
-    }
+		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.ERROR);
+		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.type")).setLevel(Level.ERROR);
+	}
 
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
 
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
 }
