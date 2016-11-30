@@ -28,30 +28,6 @@ public class P4BatchTest extends AbstractCommonLanceurTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void insertionUnPeuMassiveTest() {
-		long chrono = System.currentTimeMillis();
-		int cptEleve = 0;
-		for (int i = 0; i < 10000; i++) {
-			Classe c = new Classe();
-			c.setNom("classe" + i);
-
-			Professeur p = new Professeur();
-			p.setNom("Professeur" + i);
-
-			c.setProfesseur(p);
-
-			c.setEleves(new HashSet<Eleve>());
-			for (int j = 0; j < 25; j++) {
-				Eleve e = new Eleve();
-				e.setNom("eleve" + cptEleve++);
-				c.addEleve(e);
-			}
-			getEntityManager().persist(c);
-		}
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
 	public void insertionMassiveTest() {
 		long chrono = System.currentTimeMillis();
 		int cptEleve = 0;
@@ -143,7 +119,7 @@ public class P4BatchTest extends AbstractCommonLanceurTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void insertionMassiveTest_explication() {
+	public void insertionMassiveTest_explicationCache() {
 		int cptEleve = 0;
 		long idProf = 0;
 
@@ -170,12 +146,17 @@ public class P4BatchTest extends AbstractCommonLanceurTest {
 
 		System.out.println("1ére requête :");
 
-		Professeur prof1 = (Professeur) getEntityManager().find(Professeur.class, idProf);
+		getEntityManager().find(Professeur.class, idProf);
 
 		System.out.println("2éme requête avec un clear avant :");
 
 		getEntityManager().clear();
-		prof1 = (Professeur) getEntityManager().find(Professeur.class, idProf);
+		getEntityManager().find(Professeur.class, idProf);
+
+		System.out.println("Le cache 1er ou 2éme niveau ne marche que lorsqu'on utilise l'id de l'entity");
+		getEntityManager().createQuery("from Professeur p where p.nom='Professeur1'").getResultList();
+		getEntityManager().createQuery("from Professeur p where p.nom='Professeur1'").getResultList();
+
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
 
 	}
