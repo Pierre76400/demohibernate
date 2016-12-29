@@ -21,7 +21,7 @@ import fr.softeam.util.AbstractCommonLanceurTest;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class P4BatchTest extends AbstractCommonLanceurTest {
+public class P4BatchInsertTest extends AbstractCommonLanceurTest {
 
 	@Autowired
 	private ProfesseurDao professeurDao;
