@@ -27,7 +27,7 @@ public class P5PbCache extends AbstractCommonLanceurTest {
 	private ProfesseurDao professeurDao;
 
 	@Test
-	public void requeteSql() {
+	public void requeteDeleteSql() {
 
 		int nbDelete = getEntityManager().createNativeQuery("delete from eleve").executeUpdate();
 		System.out.println("Nb d'éléves supprimés : " + nbDelete);
@@ -42,7 +42,7 @@ public class P5PbCache extends AbstractCommonLanceurTest {
 	}
 
 	@Test
-	public void requeteSql_solution() {
+	public void requeteDeleteSql_solution() {
 
 		int nbDelete = getEntityManager().createNativeQuery("delete from eleve").executeUpdate();
 		System.out.println("Nb d'éléves supprimés : " + nbDelete);
@@ -57,6 +57,30 @@ public class P5PbCache extends AbstractCommonLanceurTest {
 
 			System.out.println("Eleve avec l'id 1 pas trouvé");
 		}
+	}
+
+	@Test
+	public void requeteUpdateSql() {
+
+		Eleve e = getEntityManager().find(Eleve.class, 1l);
+
+		System.out.println("Nom du professeur avant requête SQL : " + e.getNom());
+
+		getEntityManager().createNativeQuery("update eleve set nom='Tournesol'").executeUpdate();
+
+		System.out.println("Nom du professeur aprés requête SQL : " + e.getNom());
+	}
+
+	@Test
+	public void requeteUpdateSql_solution() {
+
+		Eleve e = getEntityManager().find(Eleve.class, 1l);
+
+		System.out.println("Nom du professeur avant requête SQL : " + e.getNom());
+
+		getEntityManager().createNativeQuery("update eleve set nom='Tournesol'").executeUpdate();
+		getEntityManager().refresh(e);
+		System.out.println("Nom du professeur aprés requête SQL : " + e.getNom());
 	}
 
 	@Override
