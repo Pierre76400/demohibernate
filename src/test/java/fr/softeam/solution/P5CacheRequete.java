@@ -128,6 +128,58 @@ public class P5CacheRequete {
 		System.out.println("Classe : " + classe.getNom());
 	}
 
+	// Rajouter au niveau des entity Classe et au niveau Professeur , le cache :
+	// @Cache(usage =CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@Test
+	@SuppressWarnings("unchecked")
+	public void requeteAvecCache_solution() {
+
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		ClasseP3 classe = null;
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'")
+					.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		System.out.println("Classe : " + classe.getNom());
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+			classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'")
+					.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		System.out.println("Classe : " + classe.getNom());
+	}
+
 	@Before
 	public void init() {
 		EntityManager entityManager = null;
