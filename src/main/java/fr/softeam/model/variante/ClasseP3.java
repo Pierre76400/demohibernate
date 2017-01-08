@@ -12,7 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ClasseP3 {
 
 	@Id
@@ -27,6 +31,7 @@ public class ClasseP3 {
 	private ProfesseurP3 professeur;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "classe", fetch = FetchType.LAZY)
+	@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	private Set<EleveP3> eleves = new HashSet<EleveP3>();
 
 	public long getId() {

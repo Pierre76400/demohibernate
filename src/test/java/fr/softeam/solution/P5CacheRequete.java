@@ -1,5 +1,9 @@
 package fr.softeam.solution;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -32,7 +36,6 @@ public class P5CacheRequete {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void requeteSansCache() {
-
 		EntityManager entityManager = null;
 		EntityTransaction transaction = null;
 		ClasseP3 classe = null;
@@ -178,6 +181,139 @@ public class P5CacheRequete {
 		}
 
 		System.out.println("Classe : " + classe.getNom());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void requeteAvecCacheOneToMany() {
+
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		ClasseP3 classe = null;
+		List<ClasseP3> classes = null;
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			classe = (ClasseP3) entityManager
+					.createQuery(
+							"select distinct c from ClasseP3 c" + " join fetch c.eleves"
+									+ " join fetch c.professeur where c.nom='classe1'")
+					.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		System.out.println("Classe : " + classe.getNom());
+		for (EleveP3 e : classe.getEleves()) {
+			System.out.print("Eleve = " + e.getId() + " " + e.getNom() + "  ");
+		}
+		System.out.println("");
+		System.out.println("");
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			classe = (ClasseP3) entityManager
+					.createQuery(
+							"select distinct c from ClasseP3 c" + " join fetch c.eleves"
+									+ " join fetch c.professeur where c.nom='classe1'")
+					.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
+
+			System.out.println("Classe : " + classe.getNom());
+			for (EleveP3 e : classe.getEleves()) {
+				System.out.print("Eleve = " + e.getId() + " " + e.getNom() + "  ");
+			}
+			System.out.println("");
+			System.out.println("");
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void cacheManuel() {
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		ClasseP3 classe = null;
+		Map<String, ClasseP3> cache = new HashMap<>();
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			if (!cache.containsKey("classe1")) {
+				classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'")
+						.getSingleResult();
+				cache.put(classe.getNom(), classe);
+			} else {
+				classe = cache.get("classe1");
+			}
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		System.out.println("Classe : " + classe.getNom());
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			if (!cache.containsKey("classe1")) {
+				classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'")
+						.getSingleResult();
+				cache.put(classe.getNom(), classe);
+			} else {
+				classe = cache.get("classe1");
+			}
+
+			System.out.println("Classe : " + classe.getNom());
+			for (EleveP3 e : classe.getEleves()) {
+				System.out.print("Eleve = " + e.getId() + " " + e.getNom() + "  ");
+			}
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
 	}
 
 	@Before
