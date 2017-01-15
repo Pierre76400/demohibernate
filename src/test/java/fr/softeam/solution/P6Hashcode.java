@@ -356,6 +356,57 @@ public class P6Hashcode {
 		}
 	}
 
+	@Test
+	@SuppressWarnings("unchecked")
+	public void hashCodeNonRedefiniAvecProbleme5() {
+
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		Classe classe = null;
+		Eleve eleve = null;
+		Eleve eleve2 = null;
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			classe = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'").getSingleResult();
+
+			eleve = (Eleve) entityManager.createQuery("from Eleve e where e.nom='eleve0'").getSingleResult();
+			System.out.println("eleve=" + eleve);
+			classe.addEleve(eleve);
+			entityManager.persist(classe);
+			entityManager.clear();
+			transaction.commit();
+
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='eleve0'").getSingleResult();
+			System.out.println("eleve2=" + eleve2);
+			classe.addEleve(eleve2);
+			entityManager.persist(classe);
+
+			transaction.commit();
+
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		System.out.println("Liste des éléves de la classe0 : ");
+
+		for (Eleve pro : classe.getEleves()) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
+
 	@Before
 	public void init() {
 		EntityManager entityManager = null;
