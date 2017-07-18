@@ -13,7 +13,7 @@ public class Eleve {
 	@GeneratedValue
 	private long id;
 
-	@Column(name = "nom")
+	@Column(name = "nom", unique = true)
 	private String nom;
 
 	@Column(name = "prenom")
@@ -53,5 +53,4 @@ public class Eleve {
 	public void setClasse(Classe classe) {
 		this.classe = classe;
 	}
-
 }

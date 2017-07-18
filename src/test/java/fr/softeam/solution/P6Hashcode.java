@@ -407,6 +407,161 @@ public class P6Hashcode {
 		}
 	}
 
+	@Test
+	@SuppressWarnings("unchecked")
+	public void hashCodeNonRedefiniAvecProbleme6() {
+
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		Classe classe = null;
+		Eleve eleve = null;
+		Eleve eleve2 = null;
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+
+			Classe c = new Classe();
+			c.setNom("classe1");
+
+			Eleve e = new Eleve();
+			e.setNom("eleve1");
+
+			c.addEleve(e);
+
+			entityManager.persist(e);
+			entityManager.persist(c);
+			entityManager.merge(c);
+			// entityManager.clear();
+			/*
+			 * System.out.println("eleve=" + eleve); classe.addEleve(eleve);
+			 * entityManager.persist(c); entityManager.clear();
+			 * transaction.commit();
+			 */
+
+			EntityManager entityManager2 = entityManagerFactory.createEntityManager();
+
+			Classe c2 = entityManager2.find(Classe.class, c.getId());
+			Eleve e2 = entityManager2.find(Eleve.class, e.getId());
+
+			boolean contains = c.getEleves().contains(e2);
+
+			c2.addEleve(e2);
+
+			c2.removeEleve(e2);
+			entityManager2.merge(c2);
+
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		System.out.println("Liste des éléves de la classe0 : ");
+
+		for (Eleve pro : classe.getEleves()) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void hashCodeNonRedefiniAvecProbleme10() {
+
+		EntityManager entityManager = null;
+		EntityTransaction transaction = null;
+		Classe classe = null;
+		Eleve eleve = null;
+		Eleve eleve2 = null;
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			classe = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'").getSingleResult();
+
+			eleve = (Eleve) entityManager.createQuery("from Eleve e where e.nom='eleve0'").getSingleResult();
+
+			classe.addEleve(eleve);
+			entityManager.persist(classe);
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		try {
+			entityManager = entityManagerFactory.createEntityManager();
+			transaction = entityManager.getTransaction();
+			transaction.begin();
+
+			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'")
+					.getSingleResult();
+
+			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='eleve0'").getSingleResult();
+
+			if (classe.getEleves().contains(eleve2)) {
+				System.out.println("classe 1 contient eleve2");
+			} else {
+				System.out.println("classe 1 ne contient  pas eleve2");
+			}
+
+			classe.addEleve(eleve2);
+
+			for (Eleve pro : classe.getEleves()) {
+				System.out.println(" - " + pro.getNom());
+			}
+
+			classe2.removeEleve(eleve);
+
+			for (Eleve pro : classe2.getEleves()) {
+				System.out.println(" - " + pro.getNom());
+			}
+			classe2.addEleve(eleve);
+
+			for (Eleve pro : classe2.getEleves()) {
+				System.out.println(" - " + pro.getNom());
+			}
+			entityManager.persist(classe);
+			entityManager.persist(classe2);
+
+			/*
+			 * p2.getChilds.add(c2);//problem2:childs contains c1 and c2 boolean
+			 * remove=p2.getChilds.remove(c2);//problem3:remove==false
+			 * entityManager1.merge(p2);//problem4: hibernate will deal with c2
+			 * 
+			 * 
+			 * eleve = entityManager.merge(eleve);
+			 * 
+			 * entityManager.persist(classe);
+			 */
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		System.out.println("Liste des éléves de la classe0 : ");
+
+		for (Eleve pro : classe.getEleves()) {
+			System.out.println(" - " + pro.getNom());
+		}
+	}
+
 	@Before
 	public void init() {
 		EntityManager entityManager = null;
@@ -440,7 +595,7 @@ public class P6Hashcode {
 				entityManager.close();
 			}
 		}
-		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.ERROR);
+		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
 	}
 
 	@After

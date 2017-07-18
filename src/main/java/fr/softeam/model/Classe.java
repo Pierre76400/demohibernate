@@ -1,5 +1,6 @@
 package fr.softeam.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,7 +26,7 @@ public class Classe {
 	private Professeur professeur;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "classe", fetch = FetchType.LAZY)
-	private Set<Eleve> eleves;
+	private Set<Eleve> eleves = new HashSet<Eleve>();
 
 	public long getId() {
 		return id;

@@ -22,6 +22,13 @@ import fr.softeam.model.Eleve;
 @SpringBootTest
 public class P6Hashcode_Propre {
 
+	private EntityManager entityManager = null;
+	private EntityTransaction transaction = null;
+	private Classe classe1 = null;
+	private Classe classe2 = null;
+	private Eleve eleve1 = null;
+	private Eleve eleve2;
+
 	@Autowired
 	private ProfesseurDao professeurDao;
 
@@ -32,56 +39,20 @@ public class P6Hashcode_Propre {
 	@SuppressWarnings("unchecked")
 	public void hashCodeNonRedefiniSansProbleme() {
 
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
-		Classe classe1 = null;
-		Eleve eleve1 = null;
-		Eleve eleve2 = null;
+		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
 
 		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
+			openNewTransaction();
 
-			classe1 = new Classe();
-			classe1.setNom("Classe CM1");
-
-			eleve1 = new Eleve();
-			eleve1.setNom("Robert");
-
-			classe1.addEleve(eleve1);
-			entityManager.persist(classe1);
-			entityManager.merge(classe1);
-			entityManager.merge(eleve1);
-
-			transaction.commit();
-		} catch (Throwable e) {
-			if (transaction != null && transaction.isActive())
-				transaction.rollback();
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-
-		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
-					.getSingleResult();
-
-			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='Robert'").getSingleResult();
+			classe2 = getClasseCm1();
+			eleve2 = getEleveRobert();
 
 			System.out.println("On ajoute eleve2 à classe2");
 			classe2.addEleve(eleve2);
 
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom());
-			}
+			afficherClasse(classe2, "classe2");
+
+			System.out.println("L'éléve Robert est bien présent qu'une seule fois");
 
 			transaction.commit();
 		} catch (Throwable e) {
@@ -98,76 +69,28 @@ public class P6Hashcode_Propre {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void hashCodeNonRedefiniAvecProbleme() {
-
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
-		Classe classe1 = null;
-		Eleve eleve1 = null;
-		Eleve eleve2 = null;
+		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
 
 		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
+			openNewTransaction();
 
-			classe1 = new Classe();
-			classe1.setNom("Classe CM1");
+			classe2 = getClasseCm1();
+			eleve2 = getEleveRobert();
 
-			eleve1 = new Eleve();
-			eleve1.setNom("Robert");
-
-			classe1.addEleve(eleve1);
-			entityManager.persist(classe1);
-			entityManager.merge(classe1);
-			entityManager.merge(eleve1);
-
-			transaction.commit();
-		} catch (Throwable e) {
-			if (transaction != null && transaction.isActive())
-				transaction.rollback();
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-
-		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
-					.getSingleResult();
-
-			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='Robert'").getSingleResult();
-
-			if (classe1.getEleves().contains(eleve2)) {
-				System.out.println("classe 1 contient eleve2");
-			} else {
+			if (!classe1.getEleves().contains(eleve2)) {
 				System.out.println("classe 1 ne contient pas eleve2");
 			}
 			System.out.println("");
 
 			System.out.println("On retire eleve1 de classe2");
 			classe2.removeEleve(eleve1);
-
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom());
-			}
-			System.out.println("");
+			afficherClasse(classe2, "classe2");
+			System.out.println("L'éléve Robert est toujours présent dans classe2");
 
 			System.out.println("On ajoute eleve1 à classe2");
 			classe2.addEleve(eleve1);
-
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom());
-			}
-			entityManager.persist(classe2);
-
-			transaction.commit();
+			afficherClasse(classe2, "classe2");
+			System.out.println("L'éléve Robert est présent deux fois dans classe2");
 		} catch (Throwable e) {
 			if (transaction != null && transaction.isActive())
 				transaction.rollback();
@@ -182,80 +105,24 @@ public class P6Hashcode_Propre {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void hashCodeNonRedefiniAvecProbleme_trace() {
-
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
-		Classe classe1 = null;
-		Eleve eleve1 = null;
-		Eleve eleve2 = null;
+		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
 
 		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
+			openNewTransaction();
 
-			classe1 = new Classe();
-			classe1.setNom("Classe CM1");
+			classe2 = getClasseCm1();
+			eleve2 = getEleveRobert();
 
-			eleve1 = new Eleve();
-			eleve1.setNom("Robert");
-
-			classe1.addEleve(eleve1);
-			entityManager.persist(classe1);
-			entityManager.merge(classe1);
-			entityManager.merge(eleve1);
-
-			transaction.commit();
-		} catch (Throwable e) {
-			if (transaction != null && transaction.isActive())
-				transaction.rollback();
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-
-		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
-					.getSingleResult();
-
-			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='Robert'").getSingleResult();
-
-			System.out.println("Eleve1 " + eleve1);
-			System.out.println("Eleve2 " + eleve2);
-			System.out.println("");
-
-			if (classe1.getEleves().contains(eleve2)) {
-				System.out.println("classe 1 contient eleve2");
-			} else {
-				System.out.println("classe 1 ne contient  pas eleve2");
-			}
-			System.out.println("");
-
-			System.out.println("On retire eleve1 de classe2");
-			classe2.removeEleve(eleve1);
-
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
-			}
+			System.out.println("Eleve1 " + eleve1.hashCode());
+			System.out.println("Eleve2 " + eleve2.hashCode());
 			System.out.println("");
 
 			System.out.println("On ajoute eleve1 à classe2");
 			classe2.addEleve(eleve1);
-
 			System.out.println("Liste des éléves de classe2");
 			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
+				System.out.println(" - " + pro.getNom() + " " + pro.hashCode());
 			}
-			entityManager.persist(classe2);
-
-			transaction.commit();
 		} catch (Throwable e) {
 			if (transaction != null && transaction.isActive())
 				transaction.rollback();
@@ -270,81 +137,35 @@ public class P6Hashcode_Propre {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void hashCodeNonRedefiniAvecProbleme_unesolution() {
-
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
-		Classe classe1 = null;
-		Eleve eleve1 = null;
-		Eleve eleve2 = null;
+		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
 
 		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
+			openNewTransaction();
 
-			classe1 = new Classe();
-			classe1.setNom("Classe CM1");
+			classe2 = getClasseCm1();
+			eleve2 = getEleveRobert();
 
-			eleve1 = new Eleve();
-			eleve1.setNom("Robert");
-
-			classe1.addEleve(eleve1);
-			entityManager.persist(classe1);
-			entityManager.merge(classe1);
-			entityManager.merge(eleve1);
-
-			transaction.commit();
-		} catch (Throwable e) {
-			if (transaction != null && transaction.isActive())
-				transaction.rollback();
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-
-		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
-					.getSingleResult();
-
-			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='Robert'").getSingleResult();
-
-			System.out.println("Eleve1 " + eleve1);
-			System.out.println("Eleve2 " + eleve2);
-			System.out.println("");
+			System.out.println("Eleve1 " + eleve1.hashCode());
+			System.out.println("Eleve2 " + eleve2.hashCode());
 			eleve1 = entityManager.merge(eleve1);
-			System.out.println("Eleve1 aprés merge " + eleve1);
-
-			if (classe1.getEleves().contains(eleve2)) {
-				System.out.println("classe 1 contient eleve2");
-			} else {
-				System.out.println("classe 1 ne contient  pas eleve2");
-			}
-			System.out.println("");
+			System.out.println("Eleve1 aprés merge " + eleve1.hashCode() + "\n");
 
 			System.out.println("On retire eleve1 de classe2");
 			classe2.removeEleve(eleve1);
+			afficherClasse(classe2, "classe2");
+			System.out.println("Il n'y a plus d'éléve dans classe2 :)\n");
 
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
-			}
-			System.out.println("");
-
-			System.out.println("On ajoute eleve1 à classe2");
+			System.out.println("On ajoute eleve1 et eleve2 à classe2");
 			classe2.addEleve(eleve1);
+			classe2.addEleve(eleve2);
+			afficherClasse(classe2, "classe2");
+			System.out.println("Il n'y a qu'un éléve Robert dans classe2 :)");
 
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
+			if (!classe1.getEleves().contains(eleve2)) {
+				System.out.println("classe 1 ne contient pas eleve2 :(");
 			}
-			entityManager.persist(classe2);
 
+			entityManager.persist(classe2);
 			transaction.commit();
 		} catch (Throwable e) {
 			if (transaction != null && transaction.isActive())
@@ -360,148 +181,21 @@ public class P6Hashcode_Propre {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void hashCodeNonRedefiniAvecProbleme_autreProbleme() {
-
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
-		Classe classe1 = null;
-		Eleve eleve1 = null;
-		Eleve eleve2 = null;
+		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
 
 		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
+			openNewTransaction();
 
-			classe1 = new Classe();
-			classe1.setNom("Classe CM1");
-
-			eleve1 = new Eleve();
-			eleve1.setNom("Robert");
-
-			classe1.addEleve(eleve1);
-			entityManager.persist(classe1);
-			entityManager.merge(classe1);
-			entityManager.merge(eleve1);
-
-			transaction.commit();
-		} catch (Throwable e) {
-			if (transaction != null && transaction.isActive())
-				transaction.rollback();
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-
-		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
-					.getSingleResult();
+			classe2 = getClasseCm1();
 
 			eleve2 = new Eleve();
-			eleve2.setNom("eleve0");
+			eleve2.setNom("Robert");
 
 			System.out.println("On ajoute eleve2 à classe2");
 			classe2.addEleve(eleve2);
+			afficherClasse(classe2, "classe2");
 
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
-			}
 			entityManager.persist(classe2);
-
-			transaction.commit();
-		} catch (Throwable e) {
-			if (transaction != null && transaction.isActive())
-				transaction.rollback();
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	// Redéfinir hashcode avec eclipse
-	public void hashCodeRedefini1() {
-
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
-		Classe classe1 = null;
-		Eleve eleve1 = null;
-
-		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			classe1 = new Classe();
-			classe1.setNom("Classe CM1");
-
-			eleve1 = new Eleve();
-			eleve1.setNom("Robert");
-
-			classe1.addEleve(eleve1);
-			entityManager.persist(classe1);
-			entityManager.merge(classe1);
-			entityManager.merge(eleve1);
-			entityManager.clear();
-			transaction.commit();
-		} catch (Throwable e) {
-			if (transaction != null && transaction.isActive())
-				transaction.rollback();
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-
-		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
-					.getSingleResult();
-
-			classe2.addEleve(eleve1);
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
-			}
-
-			if (classe2.getEleves().contains(eleve1)) {
-				System.out.println("classe 1 contient eleve2");
-			} else {
-				System.out.println("classe 1 ne contient  pas eleve2");
-			}
-			System.out.println("");
-
-			System.out.println("On retire eleve1 de classe2");
-			classe2.removeEleve(eleve1);
-
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
-			}
-			System.out.println("");
-
-			System.out.println("On ajoute eleve1 à classe2");
-			classe2.addEleve(eleve1);
-
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
-			}
-			entityManager.persist(classe2);
-
 			transaction.commit();
 		} catch (Throwable e) {
 			if (transaction != null && transaction.isActive())
@@ -517,30 +211,61 @@ public class P6Hashcode_Propre {
 	@Test
 	@SuppressWarnings("unchecked")
 	// Ici le hash code a été défini avec l'id technique
-	public void hashCodeRedefini2() {
-
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
-		Classe classe1 = null;
-		Eleve eleve1 = null;
-		Eleve eleve2 = null;
+	public void hashCodeRedefini1() {
+		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
 
 		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
+			openNewTransaction();
 
-			classe1 = new Classe();
-			classe1.setNom("Classe CM1");
+			classe2 = getClasseCm1();
+			eleve2 = getEleveRobert();
 
-			eleve1 = new Eleve();
-			eleve1.setNom("Robert");
+			System.out.println("Eleve1 " + eleve1.hashCode());
+			System.out.println("Eleve2 " + eleve2.hashCode());
+			System.out.println("");
 
-			classe1.addEleve(eleve1);
-			entityManager.persist(classe1);
-			entityManager.merge(classe1);
-			entityManager.merge(eleve1);
+			System.out.println("On ajoute eleve1 à classe2");
+			classe2.addEleve(eleve1);
+			System.out.println("Liste des éléves de classe2");
+			for (Eleve pro : classe2.getEleves()) {
+				System.out.println(" - " + pro.getNom() + " " + pro.hashCode());
+			}
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+	}
 
+	@Test
+	@SuppressWarnings("unchecked")
+	// 1ér lancement avec hashcode sur id technique
+	// 2éme lancement avec hashcode sur nom
+	public void hashCodeRedefini2() {
+		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
+
+		try {
+			openNewTransaction();
+			classe2 = getClasseCm1();
+			eleve2 = new Eleve();
+			eleve2.setNom("Robert");
+
+			System.out.println("On ajoute une nouvelle instance de l'éléve Robert à classe2");
+			classe2.addEleve(eleve2);
+			afficherClasse(classe2, "classe2");
+
+			Eleve eleve3 = new Eleve();
+			eleve3.setNom("René");
+
+			System.out.println("On ajoute un nouvel éléve René à classe2");
+			classe2.addEleve(eleve3);
+			afficherClasse(classe2, "classe2");
+
+			entityManager.persist(classe2);
 			transaction.commit();
 		} catch (Throwable e) {
 			if (transaction != null && transaction.isActive())
@@ -551,40 +276,34 @@ public class P6Hashcode_Propre {
 				entityManager.close();
 			}
 		}
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void hashCodeRedefini66() {
+		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
 
 		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
-					.getSingleResult();
-
+			openNewTransaction();
+			classe2 = getClasseCm1();
 			eleve2 = new Eleve();
-			eleve2.setNom("eleve0");
+			eleve2.setNom("Robert");
 
-			System.out.println("On ajoute eleve2 à classe2");
-			classe2.addEleve(eleve2);
+			System.out.println(eleve2.equals(classe2.getEleves().iterator().next()));
+			System.out.println(classe2.getEleves().contains(eleve2));
 
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
-			}
-
-			Eleve eleve3 = new Eleve();
-			eleve3.setNom("eleve3");
-
-			System.out.println("On ajoute un nouvelle éléve à classe2");
-			classe2.addEleve(eleve3);
-
-			System.out.println("Liste des éléves de classe2");
-			for (Eleve pro : classe2.getEleves()) {
-				System.out.println(" - " + pro.getNom() + " " + pro);
-			}
-
-			entityManager.persist(classe2);
-
-			transaction.commit();
+			/*
+			 * System.out.println(
+			 * "On ajoute une nouvelle instance de l'éléve Robert à classe2");
+			 * classe2.addEleve(eleve2); afficherClasse(classe2, "classe2");
+			 * 
+			 * Eleve eleve3 = new Eleve(); eleve3.setNom("René");
+			 * 
+			 * System.out.println("On ajoute un nouvel éléve René à classe2");
+			 * classe2.addEleve(eleve3); afficherClasse(classe2, "classe2");
+			 * 
+			 * entityManager.persist(classe2); transaction.commit();
+			 */
 		} catch (Throwable e) {
 			if (transaction != null && transaction.isActive())
 				transaction.rollback();
@@ -600,47 +319,11 @@ public class P6Hashcode_Propre {
 	@SuppressWarnings("unchecked")
 	// Ici le hash code a été défini avec le nom
 	public void hashCodeRedefini3() {
-
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
-		Classe classe1 = null;
-		Eleve eleve1 = null;
-		Eleve eleve2 = null;
+		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
 
 		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			classe1 = new Classe();
-			classe1.setNom("Classe CM1");
-
-			eleve1 = new Eleve();
-			eleve1.setNom("Robert");
-
-			classe1.addEleve(eleve1);
-			entityManager.persist(classe1);
-			entityManager.merge(classe1);
-			entityManager.merge(eleve1);
-
-			transaction.commit();
-		} catch (Throwable e) {
-			if (transaction != null && transaction.isActive())
-				transaction.rollback();
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
-
-		try {
-			entityManager = entityManagerFactory.createEntityManager();
-			transaction = entityManager.getTransaction();
-			transaction.begin();
-
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
-					.getSingleResult();
+			openNewTransaction();
+			classe2 = getClasseCm1();
 
 			eleve2 = new Eleve();
 			eleve2.setNom("eleve0");
@@ -680,7 +363,7 @@ public class P6Hashcode_Propre {
 
 	@Before
 	public void init() {
-		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.ERROR);
+		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
 	}
 
 	@After
@@ -689,4 +372,63 @@ public class P6Hashcode_Propre {
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.ERROR);
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.type")).setLevel(Level.ERROR);
 	}
+
+	private void createClasseCM1AvecEleveRobertDansUneTransactionIsole() {
+		System.out.println("*Init du jeu de test");
+		try {
+			openNewTransaction();
+
+			classe1 = new Classe();
+			classe1.setNom("Classe CM1");
+
+			eleve1 = new Eleve();
+			eleve1.setNom("Robert");
+
+			classe1.addEleve(eleve1);
+			entityManager.persist(classe1);
+			entityManager.merge(classe1);
+			entityManager.merge(eleve1);
+
+			transaction.commit();
+		} catch (Throwable e) {
+			if (transaction != null && transaction.isActive())
+				transaction.rollback();
+			throw e;
+		} finally {
+			if (entityManager != null) {
+				entityManager.close();
+			}
+		}
+
+		afficherClasse(classe1, "classe1");
+		System.out.println("*Fin de transaction");
+		System.out.println("");
+	}
+
+	private Eleve getEleveRobert() {
+		System.out.println("On récupére dans l'instance eleve2, l'éléve qui a pour nom 'Robert'");
+		System.out.println("");
+		return (Eleve) entityManager.createQuery("from Eleve e where e.nom='Robert'").getSingleResult();
+	}
+
+	private Classe getClasseCm1() {
+		System.out.println("On récupére dans l'instance classe2, la classe qui a pour nom 'Classe CM1'");
+		return (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'").getSingleResult();
+	}
+
+	private void afficherClasse(Classe classe, String nomInstance) {
+		System.out.println("Liste des éléves de la classe " + classe.getNom() + " instance=" + nomInstance);
+		for (Eleve pro : classe.getEleves()) {
+			System.out.println(" - " + pro.getNom());
+		}
+		System.out.println("");
+	}
+
+	private void openNewTransaction() {
+		entityManager = entityManagerFactory.createEntityManager();
+		transaction = entityManager.getTransaction();
+		transaction.begin();
+		System.out.println("*Début de transaction");
+	}
+
 }
