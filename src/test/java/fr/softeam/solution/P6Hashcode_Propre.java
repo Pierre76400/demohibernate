@@ -44,10 +44,10 @@ public class P6Hashcode_Propre {
 			transaction.begin();
 
 			classe1 = new Classe();
-			classe1.setNom("classe0");
+			classe1.setNom("Classe CM1");
 
 			eleve1 = new Eleve();
-			eleve1.setNom("eleve0");
+			eleve1.setNom("Robert");
 
 			classe1.addEleve(eleve1);
 			entityManager.persist(classe1);
@@ -70,10 +70,10 @@ public class P6Hashcode_Propre {
 			transaction = entityManager.getTransaction();
 			transaction.begin();
 
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'")
+			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
 					.getSingleResult();
 
-			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='eleve0'").getSingleResult();
+			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='Robert'").getSingleResult();
 
 			System.out.println("On ajoute eleve2 à classe2");
 			classe2.addEleve(eleve2);
@@ -111,10 +111,10 @@ public class P6Hashcode_Propre {
 			transaction.begin();
 
 			classe1 = new Classe();
-			classe1.setNom("classe0");
+			classe1.setNom("Classe CM1");
 
 			eleve1 = new Eleve();
-			eleve1.setNom("eleve0");
+			eleve1.setNom("Robert");
 
 			classe1.addEleve(eleve1);
 			entityManager.persist(classe1);
@@ -137,10 +137,10 @@ public class P6Hashcode_Propre {
 			transaction = entityManager.getTransaction();
 			transaction.begin();
 
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'")
+			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
 					.getSingleResult();
 
-			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='eleve0'").getSingleResult();
+			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='Robert'").getSingleResult();
 
 			if (classe1.getEleves().contains(eleve2)) {
 				System.out.println("classe 1 contient eleve2");
@@ -195,10 +195,10 @@ public class P6Hashcode_Propre {
 			transaction.begin();
 
 			classe1 = new Classe();
-			classe1.setNom("classe0");
+			classe1.setNom("Classe CM1");
 
 			eleve1 = new Eleve();
-			eleve1.setNom("eleve0");
+			eleve1.setNom("Robert");
 
 			classe1.addEleve(eleve1);
 			entityManager.persist(classe1);
@@ -221,10 +221,10 @@ public class P6Hashcode_Propre {
 			transaction = entityManager.getTransaction();
 			transaction.begin();
 
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'")
+			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
 					.getSingleResult();
 
-			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='eleve0'").getSingleResult();
+			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='Robert'").getSingleResult();
 
 			System.out.println("Eleve1 " + eleve1);
 			System.out.println("Eleve2 " + eleve2);
@@ -283,10 +283,10 @@ public class P6Hashcode_Propre {
 			transaction.begin();
 
 			classe1 = new Classe();
-			classe1.setNom("classe0");
+			classe1.setNom("Classe CM1");
 
 			eleve1 = new Eleve();
-			eleve1.setNom("eleve0");
+			eleve1.setNom("Robert");
 
 			classe1.addEleve(eleve1);
 			entityManager.persist(classe1);
@@ -309,10 +309,10 @@ public class P6Hashcode_Propre {
 			transaction = entityManager.getTransaction();
 			transaction.begin();
 
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'")
+			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
 					.getSingleResult();
 
-			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='eleve0'").getSingleResult();
+			eleve2 = (Eleve) entityManager.createQuery("from Eleve e where e.nom='Robert'").getSingleResult();
 
 			System.out.println("Eleve1 " + eleve1);
 			System.out.println("Eleve2 " + eleve2);
@@ -373,10 +373,10 @@ public class P6Hashcode_Propre {
 			transaction.begin();
 
 			classe1 = new Classe();
-			classe1.setNom("classe0");
+			classe1.setNom("Classe CM1");
 
 			eleve1 = new Eleve();
-			eleve1.setNom("eleve0");
+			eleve1.setNom("Robert");
 
 			classe1.addEleve(eleve1);
 			entityManager.persist(classe1);
@@ -399,7 +399,7 @@ public class P6Hashcode_Propre {
 			transaction = entityManager.getTransaction();
 			transaction.begin();
 
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'")
+			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
 					.getSingleResult();
 
 			eleve2 = new Eleve();
@@ -442,10 +442,10 @@ public class P6Hashcode_Propre {
 			transaction.begin();
 
 			classe1 = new Classe();
-			classe1.setNom("classe0");
+			classe1.setNom("Classe CM1");
 
 			eleve1 = new Eleve();
-			eleve1.setNom("eleve0");
+			eleve1.setNom("Robert");
 
 			classe1.addEleve(eleve1);
 			entityManager.persist(classe1);
@@ -468,7 +468,7 @@ public class P6Hashcode_Propre {
 			transaction = entityManager.getTransaction();
 			transaction.begin();
 
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'")
+			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
 					.getSingleResult();
 
 			classe2.addEleve(eleve1);
@@ -531,10 +531,10 @@ public class P6Hashcode_Propre {
 			transaction.begin();
 
 			classe1 = new Classe();
-			classe1.setNom("classe0");
+			classe1.setNom("Classe CM1");
 
 			eleve1 = new Eleve();
-			eleve1.setNom("eleve0");
+			eleve1.setNom("Robert");
 
 			classe1.addEleve(eleve1);
 			entityManager.persist(classe1);
@@ -557,7 +557,7 @@ public class P6Hashcode_Propre {
 			transaction = entityManager.getTransaction();
 			transaction.begin();
 
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'")
+			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
 					.getSingleResult();
 
 			eleve2 = new Eleve();
@@ -613,10 +613,10 @@ public class P6Hashcode_Propre {
 			transaction.begin();
 
 			classe1 = new Classe();
-			classe1.setNom("classe0");
+			classe1.setNom("Classe CM1");
 
 			eleve1 = new Eleve();
-			eleve1.setNom("eleve0");
+			eleve1.setNom("Robert");
 
 			classe1.addEleve(eleve1);
 			entityManager.persist(classe1);
@@ -639,7 +639,7 @@ public class P6Hashcode_Propre {
 			transaction = entityManager.getTransaction();
 			transaction.begin();
 
-			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='classe0'")
+			Classe classe2 = (Classe) entityManager.createQuery("from Classe c where c.nom='Classe CM1'")
 					.getSingleResult();
 
 			eleve2 = new Eleve();
