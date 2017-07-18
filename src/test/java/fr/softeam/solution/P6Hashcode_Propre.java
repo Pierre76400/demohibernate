@@ -159,7 +159,7 @@ public class P6Hashcode_Propre {
 			System.out.println("");
 
 			System.out.println("On ajoute eleve1 à classe2");
-			classe2.addEleve(eleve2);
+			classe2.addEleve(eleve1);
 
 			System.out.println("Liste des éléves de classe2");
 			for (Eleve pro : classe2.getEleves()) {
