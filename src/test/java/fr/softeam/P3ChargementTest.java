@@ -1,4 +1,4 @@
-package fr.softeam.solution;
+package fr.softeam;
 
 import java.util.List;
 
@@ -53,40 +53,6 @@ public class P3ChargementTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void afficherListeDesElevesDUnProfesseurTest_sansErreurOptionHibernate() {
-		// Passer la propriété "enable_lazy_load_no_trans" à true
-		String nomProfesseur = "Professeur1";
-		ClasseP3 classe = null;
-
-		beginTransaction();
-
-		classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.professeur.nom='" + nomProfesseur + "'")
-				.getSingleResult();
-
-		closeTransaction();
-
-		afficherClasse(nomProfesseur, classe);
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void afficherListeDesElevesDUnProfesseurTest_sansErreurEager() {
-		// Passer la relation professeurP3.eleves à eager
-		String nomProfesseur = "Professeur1";
-		ClasseP3 classe = null;
-
-		beginTransaction();
-
-		classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.professeur.nom='" + nomProfesseur + "'")
-				.getSingleResult();
-
-		closeTransaction();
-
-		afficherClasse(nomProfesseur, classe);
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
 	public void afficherLesClassesDUnProfesseurTest() {
 		// Passer la relation professeurP3.eleves à eager
 		String nomProfesseur = "Professeur1";
@@ -103,23 +69,6 @@ public class P3ChargementTest {
 		for (ClasseP3 pro : classes) {
 			System.out.println(" - " + pro.getNom());
 		}
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void afficherListeDesElevesDUnProfesseurTest_solution() {
-		String nomProfesseur = "Professeur1";
-		ClasseP3 classe = null;
-
-		beginTransaction();
-
-		classe = (ClasseP3) entityManager.createQuery(
-				"from ClasseP3 c " + "join fetch c.eleves where c.professeur.nom='" + nomProfesseur + "'")
-				.getSingleResult();
-
-		closeTransaction();
-
-		afficherClasse(nomProfesseur, classe);
 	}
 
 	@Before

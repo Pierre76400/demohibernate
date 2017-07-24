@@ -1,0 +1,13 @@
+1- Pas de trace
+
+2- Afficher les requêtes
+Passer le log "org.hibernate.SQL" au niveau DEBUG
+
+3- Ajouter le formattage
+dans le fichier "application.porperties" passer spring.jpa.properties.hibernate.format_sql à true
+
+4- Ajouter la provenance de la requete
+spring.jpa.properties.hibernate.use_sql_comments à true
+
+5- Afficher paramétre
+Passer le log "org.hibernate.type" au niveau DEBUG

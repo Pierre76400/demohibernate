@@ -1,0 +1,12 @@
+1- Lancer Test 
+=> Lazy exception
+
+2- Utiliser l'option "enable_lazy_load_no_trans" (à true
+
+3- Désactiver l'option "enable_lazy_load_no_trans"
+Passer la relation ClasseP3.eleves à EAGER
+
+4- afficherLesClassesDUnProfesseurTest => 2 requête au lieu d'une
+
+5 - Solution repasser la relation ClasseP3.eleves à EAGER
+Utiliser Fetch "from ClasseP3 c join fetch c.eleves where c.professeur..."

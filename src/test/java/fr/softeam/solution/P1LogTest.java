@@ -13,22 +13,19 @@ public class P1LogTest extends AbstractCommonLanceurSansLogTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void afficherProfesseurTest() {
+	public void afficherProfesseursTest() {
+		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("fr.softeam.solution")).setLevel(Level.ERROR);
 		Professeur prof1 = (Professeur) getEntityManager().createQuery("from Professeur where nom=?")
 				.setParameter(1, "Professeur1").getSingleResult();
 		System.out.println("Professeur avec l'id 1 : " + prof1.getNom());
 
 		List<Professeur> profs = getEntityManager().createQuery("from Professeur").getResultList();
-		System.out.println("Liste des professeurs :");
-		for (Professeur pro : profs) {
-			System.out.println(" - " + pro.getNom());
-		}
-
+		afficherListeDesProfesseurs(profs);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void afficherProfesseurTest_avec_trace_sql() {
+	public void afficherProfesseursTest_avecTraceSql() {
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
 
 		Professeur prof1 = (Professeur) getEntityManager().createQuery("from Professeur where nom=?")
@@ -36,15 +33,12 @@ public class P1LogTest extends AbstractCommonLanceurSansLogTest {
 		System.out.println("Professeur avec l'id 1 : " + prof1.getNom());
 
 		List<Professeur> profs = getEntityManager().createQuery("from Professeur").getResultList();
-		System.out.println("Liste des professeurs :");
-		for (Professeur pro : profs) {
-			System.out.println(" - " + pro.getNom());
-		}
+		afficherListeDesProfesseurs(profs);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void afficherProfesseurTest_ajoutFormattage() {
+	public void afficherProfesseursTest_ajoutFormattage() {
 		// Il faut activer la propriété hibernate "format_sql"
 		//
 		// Dans spring boot on peut accéder aux propriétés hibernate dans le
@@ -58,15 +52,12 @@ public class P1LogTest extends AbstractCommonLanceurSansLogTest {
 		System.out.println("Professeur avec l'id 1 : " + prof1.getNom());
 
 		List<Professeur> profs = getEntityManager().createQuery("from Professeur").getResultList();
-		System.out.println("Liste des professeurs :");
-		for (Professeur pro : profs) {
-			System.out.println(" - " + pro.getNom());
-		}
+		afficherListeDesProfesseurs(profs);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void afficherProfesseurTest_ajoutProvenanceRequete() {
+	public void afficherProfesseursTest_ajoutProvenanceRequete() {
 		// Il faut activer la propriété hibernate "use_sql_comments"
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
 
@@ -75,15 +66,12 @@ public class P1LogTest extends AbstractCommonLanceurSansLogTest {
 		System.out.println("Professeur avec l'id 1 : " + prof1.getNom());
 
 		List<Professeur> profs = getEntityManager().createQuery("from Professeur").getResultList();
-		System.out.println("Liste des professeurs :");
-		for (Professeur pro : profs) {
-			System.out.println(" - " + pro.getNom());
-		}
+		afficherListeDesProfesseurs(profs);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void afficherProfesseurTest_ajoutParametreRequete() {
+	public void afficherProfesseursTest_ajoutParametreRequete() {
 		// Il faut activer la propriété hibernate "use_sql_comments"
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.type")).setLevel(Level.TRACE);
@@ -93,6 +81,10 @@ public class P1LogTest extends AbstractCommonLanceurSansLogTest {
 		System.out.println("Professeur avec l'id 1 : " + prof1.getNom());
 
 		List<Professeur> profs = getEntityManager().createQuery("from Professeur").getResultList();
+		afficherListeDesProfesseurs(profs);
+	}
+
+	private void afficherListeDesProfesseurs(List<Professeur> profs) {
 		System.out.println("Liste des professeurs :");
 		for (Professeur pro : profs) {
 			System.out.println(" - " + pro.getNom());

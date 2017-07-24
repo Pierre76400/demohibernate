@@ -20,7 +20,7 @@ import fr.softeam.model.Eleve;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class P6Hashcode_Propre {
+public class P7Hashcode_Propre {
 
 	private EntityManager entityManager = null;
 	private EntityTransaction transaction = null;

@@ -1,4 +1,4 @@
-package fr.softeam.solution;
+package fr.softeam;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,37 +37,6 @@ public class P2ParametreTest extends AbstractCommonLanceurTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void afficherClasseAvecElevesDUnProfesseur_Probleme_Test() {
-		String nomProfesseur = "'";
-
-		List<Classe> classes = getEntityManager().createQuery(
-				"from Classe c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
-				.getResultList();
-		afficherClasse(nomProfesseur, classes);
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void afficherClasseAvecElevesDUnProfesseur_ProblemePlusGrave_Test() {
-		String nomProfesseur = "' or ''='";
-		List<Classe> classes = getEntityManager().createQuery(
-				"from Classe c left join fetch c.professeur where c.professeur.nom='" + nomProfesseur + "'")
-				.getResultList();
-		afficherClasse(nomProfesseur, classes);
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void afficherClasseAvecElevesDUnProfesseur_soluce() {
-		String nomProfesseur = "' or ''='";
-		List<Classe> classes = getEntityManager()
-				.createQuery("from Classe c left join fetch c.professeur where c.professeur.nom=:nomProfesseur")
-				.setParameter("nomProfesseur", nomProfesseur).getResultList();
-		afficherClasse(nomProfesseur, classes);
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
 	public void paramListe() {
 		List<String> nomProfesseurs = Arrays.asList("Professeur1", "Professeur2");
 
@@ -89,18 +58,6 @@ public class P2ParametreTest extends AbstractCommonLanceurTest {
 		}
 
 		List<Classe> classes = query.getResultList();
-
-		afficherClassesDUnProfesseur(nomProfesseurs, classes);
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void paramListe_soluce() {
-		List<String> nomProfesseurs = Arrays.asList("Professeur1", "Professeur2");
-
-		List<Classe> classes = getEntityManager()
-				.createQuery("from Classe c left join fetch c.professeur where c.professeur.nom  in (:nomProfesseurs)")
-				.setParameter("nomProfesseurs", nomProfesseurs).getResultList();
 
 		afficherClassesDUnProfesseur(nomProfesseurs, classes);
 	}
