@@ -1,0 +1,12 @@
+1- Execution du test => Il n'y aucun cache
+
+2 - On a rajouté le cache de la requête mais cela ne semble pas marcher
+=> TODO : extrait de la définition du cache requête
+
+3 - On rajoute 
+
+4 - requeteAvecCacheOneToMany ?????? Probablement sur le cache de la relation 
+
+5 - cacheManuel marche trés bien
+
+6 - cacheManuelQuiNeMarchePlus ne marche plus => Explication sur les états des entity hibernate
