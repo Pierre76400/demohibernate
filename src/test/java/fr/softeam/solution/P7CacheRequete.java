@@ -24,7 +24,7 @@ import fr.softeam.model.variante.ProfesseurP3;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class P6CacheRequete {
+public class P7CacheRequete {
 
     @Autowired
     private ProfesseurDao professeurDao;
