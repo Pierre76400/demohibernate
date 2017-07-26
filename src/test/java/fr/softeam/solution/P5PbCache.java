@@ -64,11 +64,11 @@ public class P5PbCache extends AbstractCommonLanceurTest {
 
 		Eleve e = getEntityManager().find(Eleve.class, 1l);
 
-		System.out.println("Nom du professeur avant requête SQL : " + e.getNom());
+		System.out.println("Nom de l'éléve avant requête SQL : " + e.getNom());
 
-		getEntityManager().createNativeQuery("update eleve set nom='Tournesol'").executeUpdate();
+		getEntityManager().createNativeQuery("update eleve set nom='Dupond' where id=1").executeUpdate();
 
-		System.out.println("Nom du professeur aprés requête SQL : " + e.getNom());
+		System.out.println("Nom de l'éléve aprés requête SQL : " + e.getNom());
 	}
 
 	@Test
@@ -76,11 +76,11 @@ public class P5PbCache extends AbstractCommonLanceurTest {
 
 		Eleve e = getEntityManager().find(Eleve.class, 1l);
 
-		System.out.println("Nom du professeur avant requête SQL : " + e.getNom());
+		System.out.println("Nom de l'éléve avant requête SQL : " + e.getNom());
 
-		getEntityManager().createNativeQuery("update eleve set nom='Tournesol'").executeUpdate();
+		getEntityManager().createNativeQuery("update eleve set nom='Dupond' where id=1").executeUpdate();
 		getEntityManager().refresh(e);
-		System.out.println("Nom du professeur aprés requête SQL : " + e.getNom());
+		System.out.println("Nom de l'éléve aprés requête SQL : " + e.getNom());
 	}
 
 	@Override
