@@ -1,4 +1,4 @@
-package fr.softeam.solution;
+package fr.softeam;
 
 import java.util.HashSet;
 
@@ -46,38 +46,6 @@ public class P4BatchInsertTest extends AbstractCommonLanceurTest {
 			Classe c = creerClasseAvecProfesseurEtEleves(i);
 			getEntityManager().persist(c);
 		}
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void insertionMassiveTest_avecTrace() {
-
-		for (int i = 0; i < 100000; i++) {
-			Classe c = creerClasseAvecProfesseurEtEleves(i);
-			getEntityManager().persist(c);
-
-			if (i % 10000 == 0) {
-				System.out.println(i + " Tps insertion : " + (System.currentTimeMillis() - chrono) + " ms");
-			}
-		}
-
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void insertionMassiveTest_solution() {
-
-		for (int i = 0; i < 100000; i++) {
-			Classe c = creerClasseAvecProfesseurEtEleves(i);
-			getEntityManager().persist(c);
-
-			if (i % 10000 == 0) {
-				System.out.println(i + " Tps insertion : " + (System.currentTimeMillis() - chrono) + " ms");
-
-				getEntityManager().clear();
-			}
-		}
-
 	}
 
 	@Test

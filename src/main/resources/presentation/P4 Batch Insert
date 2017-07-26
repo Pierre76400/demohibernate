@@ -1,0 +1,13 @@
+1 - Lancement insertionDeTailleMoyenneTest
+=> Temps d'insertion rapide pour 10 000
+
+2 - Lancement insertionMassiveTest
+=> Ne répond pas ? Pourquoi ? 100 000 enregistrement devrait durer dix fois plus de temps que le précédent
+
+3 - On rajout des traces dans le précédent test tout les 10 000 enregistrements
+
+4 - On vide la mémoire getEntityManager().clear();
+=> EXPLICATION
+
+5 - Lancer le test avec l'explication
+

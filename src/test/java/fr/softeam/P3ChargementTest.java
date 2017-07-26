@@ -54,7 +54,6 @@ public class P3ChargementTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void afficherLesClassesDUnProfesseurTest() {
-		// Passer la relation professeurP3.eleves à eager
 		String nomProfesseur = "Professeur1";
 		List<ClasseP3> classes = null;
 
