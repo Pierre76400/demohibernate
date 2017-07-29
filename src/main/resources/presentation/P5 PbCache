@@ -1,0 +1,20 @@
+1 - requeteDeleteSql
+=> Ne marche pas
+
+2 - Rajouter un raffraichissement de la session
+=> getEntityManager().clear();
+
+3 - requeteUpdateSql
+
+4- Correction
+=>Ne marche pas , un peu dommage de raffraichier toutes la session pour ça
+=> getEntityManager().refresh(e);
+
+5- requeteUpdateSql2
+Quelle est le nom de l'éléve à la fin du test ?
+
+Rajouter le nom de l'éléeve.
+Rajouter les logs => Requête SQL joué aussitot
+Solution faire un flush aprés le persist et ajouter un refresh
+
+

@@ -1,4 +1,4 @@
-package fr.softeam.solution;
+package fr.softeam;
 
 import java.util.HashSet;
 
@@ -94,33 +94,6 @@ public class P5PbCache extends AbstractCommonLanceurTest {
 
 		getEntityManager().createNativeQuery("update eleve set nom='Dupond' where id=1").executeUpdate();
 		getEntityManager().flush();
-	}
-
-	@Test
-	public void requeteUpdateSql2_Explication() {
-
-		Eleve e = getEntityManager().find(Eleve.class, 1l);
-		e.setNom("Durand");
-		getEntityManager().persist(e);
-		System.out.println("Nom de l'éléve avant requête SQL : " + e.getNom());
-
-		getEntityManager().createNativeQuery("update eleve set nom='Dupond' where id=1").executeUpdate();
-		getEntityManager().flush();
-		System.out.println("Nom de l'éléve aprés requête SQL : " + e.getNom());
-	}
-
-	@Test
-	public void requeteUpdateSql2_Solution() {
-
-		Eleve e = getEntityManager().find(Eleve.class, 1l);
-		e.setNom("Durand");
-		getEntityManager().persist(e);
-		System.out.println("Nom de l'éléve avant requête SQL : " + e.getNom());
-		getEntityManager().flush();
-
-		getEntityManager().createNativeQuery("update eleve set nom='Dupond' where id=1").executeUpdate();
-		getEntityManager().refresh(e);
-		System.out.println("Nom de l'éléve aprés requête SQL : " + e.getNom());
 	}
 
 	@Override
