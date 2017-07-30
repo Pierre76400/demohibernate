@@ -162,32 +162,6 @@ public class P8Hashcode {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	// Ici le hash code a été défini avec l'id technique
-	public void hashCodeRedefini1() {
-		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
-
-		openNewTransaction();
-
-		classe2 = getClasseCm1();
-		eleve2 = getEleveRobert();
-
-		System.out.println("Eleve1 " + eleve1.hashCode());
-		System.out.println("Eleve2 " + eleve2.hashCode());
-		System.out.println("");
-
-		System.out.println("On ajoute eleve1 à classe2");
-		classe2.addEleve(eleve1);
-		System.out.println("Liste des éléves de classe2");
-		for (Eleve pro : classe2.getEleves()) {
-			System.out.println(" - " + pro.getNom() + " " + pro.hashCode());
-		}
-		closeTransaction();
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	// 1er lancement avec hashcode sur idtechnique => Erreur
-	// 2éme lancement avec hashcode sur nom
 	public void hashCodeRedefini2() {
 		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
 
@@ -209,43 +183,6 @@ public class P8Hashcode {
 
 		entityManager.persist(classe2);
 		closeTransaction();
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
-	public void hashCodeRedefini66() {
-		createClasseCM1AvecEleveRobertDansUneTransactionIsole();
-
-		try {
-			openNewTransaction();
-			classe2 = getClasseCm1();
-			eleve2 = new Eleve();
-			eleve2.setNom("Robert");
-
-			System.out.println(eleve2.equals(classe2.getEleves().iterator().next()));
-			System.out.println(classe2.getEleves().contains(eleve2));
-
-			/*
-			 * System.out.println(
-			 * "On ajoute une nouvelle instance de l'éléve Robert à classe2");
-			 * classe2.addEleve(eleve2); afficherClasse(classe2, "classe2");
-			 * 
-			 * Eleve eleve3 = new Eleve(); eleve3.setNom("René");
-			 * 
-			 * System.out.println("On ajoute un nouvel éléve René à classe2");
-			 * classe2.addEleve(eleve3); afficherClasse(classe2, "classe2");
-			 * 
-			 * entityManager.persist(classe2); transaction.commit();
-			 */
-		} catch (Throwable e) {
-			if (transaction != null && transaction.isActive())
-				transaction.rollback();
-			throw e;
-		} finally {
-			if (entityManager != null) {
-				entityManager.close();
-			}
-		}
 	}
 
 	@Before
