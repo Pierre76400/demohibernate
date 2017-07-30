@@ -1,4 +1,4 @@
-package fr.softeam.solution;
+package fr.softeam;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -52,65 +52,7 @@ public class P7CacheRequete {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void requeteAvecCache() {
-		openTransaction();
-		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'")
-				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
-		closeTransaction();
-		System.out.println("Classe : " + classe.getNom());
-
-		openTransaction();
-		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'")
-				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
-		closeTransaction();
-		System.out.println("Classe : " + classe.getNom());
-	}
-
-	// Rajouter au niveau des entity Classe et au niveau Professeur , le cache :
-	// @Cache(usage =CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	@Test
-	@SuppressWarnings("unchecked")
-	public void requeteAvecCache_solution() {
-		openTransaction();
-		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'")
-				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
-		closeTransaction();
-		System.out.println("Classe : " + classe.getNom());
-
-		openTransaction();
-		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'")
-				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
-		closeTransaction();
-		System.out.println("Classe : " + classe.getNom());
-	}
-
-	@Test
-	@SuppressWarnings("unchecked")
 	public void requetePeuEfficaceAvecOneToMany() {
-
-		openTransaction();
-		classe = (ClasseP7) entityManager
-				.createQuery(
-						"select distinct c from ClasseP7 c" + " join fetch c.eleves"
-								+ " join fetch c.professeur where c.nom='classe1'")
-				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
-		closeTransaction();
-		afficherClasse(classe);
-
-		openTransaction();
-		classe = (ClasseP7) entityManager
-				.createQuery(
-						"select distinct c from ClasseP7 c" + " join fetch c.eleves"
-								+ " join fetch c.professeur where c.nom='classe1'")
-				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
-		afficherClasse(classe);
-		closeTransaction();
-	}
-
-	// Rajouter au niveau des entity Eleve et de la relation Classe.eleve
-	@Test
-	@SuppressWarnings("unchecked")
-	public void requetePeuEfficaceAvecOneToMany_solution() {
 
 		openTransaction();
 		classe = (ClasseP7) entityManager

@@ -5,10 +5,11 @@
 => mais cela ne semble pas marcher
 => extrait de la définition du cache requête
 
-3 - On rajoute 
+3 - On rajoute  au niveau des entity Classe et au niveau Professeur , le cache :
+	// @Cache(usage =CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 
-4 - requeteAvecCacheOneToMany ?????? Probablement sur le cache de la relation 
-
-5 - cacheManuel marche trés bien
-
-6 - cacheManuelQuiNeMarchePlus ne marche plus => Explication sur les états des entity hibernate
+4 - requeteAvecCacheOneToMany
+La requête fait une jointure sur la table Eleve en plus , comment faire pour la mettre en cache ?
+=> On rajoute le cache sur l'entity Eleve
+=> Cela ne marche toujours pas ! Pourquoi ?
+=> Rajouter le cache sur la relation dans la classe "Classe"

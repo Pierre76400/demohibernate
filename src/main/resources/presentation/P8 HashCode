@@ -1,0 +1,18 @@
+1- hashCodeNonRedefiniSansProbleme
+On essai d'insérer une entity chargé dans !2 session / transaction différentes aucun probléme
+
+
+2- On essai d'insérer des entity avec des états différents detached et menagerd => Erreur
+=> On merge cela marche !
+
+
+3- On essai d'insérer des entity avec des états différents new et menaged => Erreur
+=> On doit redéfinir le hashcode
+
+4- On écrit un hashcode avec l'id technique
+=> Ok
+
+5 - On lance le test résultat inattendue
+=> Probléme avec les entity avec l'état NEW(Transient)
+
+5- On écrit un hashcode avec des identifiant naturels
