@@ -1,0 +1,14 @@
+1 - Executer le tests problemePerformance 
+=> La même requete est executé 2 fois , la mettre en cache
+
+2 - Utilisation du cache manuel
+=> utiliser la méthode de cache (classe = getOrPutInCache(classeRecherchee);)
+=> Cela marche trés bien
+
+3 - On doit afficher la classe et ses éléves  (afficherClasse(classe);)
+=> Cela ne marche plus , pourtrant on a bien une session
+
+4- Une solution  , réattacher l'entity à la session
+classe = entityManager.merge(classe);
+
+

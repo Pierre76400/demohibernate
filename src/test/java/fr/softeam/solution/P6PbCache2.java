@@ -18,9 +18,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.Level;
 import fr.softeam.dao.ProfesseurDao;
-import fr.softeam.model.variante.ClasseP3;
-import fr.softeam.model.variante.EleveP3;
-import fr.softeam.model.variante.ProfesseurP3;
+import fr.softeam.model.Classe;
+import fr.softeam.model.Eleve;
+import fr.softeam.model.Professeur;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,21 +36,42 @@ public class P6PbCache2 {
 
 	private EntityTransaction transaction = null;
 
+	private Map<String, Classe> cache = new HashMap<>();
+
 	@Test
 	@SuppressWarnings("unchecked")
-	public void cacheManuel() {
-		Map<String, ClasseP3> cache = new HashMap<>();
+	public void problemePerformance() {
 		String classeRecherchee = "classe1";
-		ClasseP3 classe = null;
+		Classe classe = null;
 
 		openTransaction();
-		classe = getOrPutInCache(cache, classeRecherchee);
+		classe = (Classe) entityManager.createQuery("from Classe c where c.nom='" + classeRecherchee + "'")
+				.getSingleResult();
 		closeTransaction();
 
 		System.out.println("Classe : " + classe.getNom());
 
 		openTransaction();
-		getOrPutInCache(cache, classeRecherchee);
+		classe = (Classe) entityManager.createQuery("from Classe c where c.nom='" + classeRecherchee + "'")
+				.getSingleResult();
+		System.out.println("Classe : " + classe.getNom());
+		closeTransaction();
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void cacheManuel() {
+		String classeRecherchee = "classe1";
+		Classe classe = null;
+
+		openTransaction();
+		classe = getOrPutInCache(classeRecherchee);
+		closeTransaction();
+
+		System.out.println("Classe : " + classe.getNom());
+
+		openTransaction();
+		classe = getOrPutInCache(classeRecherchee);
 		System.out.println("Classe : " + classe.getNom());
 		closeTransaction();
 	}
@@ -58,26 +79,45 @@ public class P6PbCache2 {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void cacheManuelQuiNeMarchePlus() {
-		Map<String, ClasseP3> cache = new HashMap<>();
 		String classeRecherchee = "classe1";
-		ClasseP3 classe = null;
+		Classe classe = null;
 
 		openTransaction();
-		classe = getOrPutInCache(cache, classeRecherchee);
+		classe = getOrPutInCache(classeRecherchee);
 		closeTransaction();
 		System.out.println("Classe : " + classe.getNom());
 
 		openTransaction();
-		classe = getOrPutInCache(cache, classeRecherchee);
+		classe = getOrPutInCache(classeRecherchee);
 		System.out.println("Classe : " + classe.getNom());
 		afficherClasse(classe);
 		closeTransaction();
 	}
 
-	private ClasseP3 getOrPutInCache(Map<String, ClasseP3> cache, String classeRecherchee) {
-		ClasseP3 classe;
+	@Test
+	@SuppressWarnings("unchecked")
+	public void cacheManuelQuiNeMarchePlus_solution() {
+		String classeRecherchee = "classe1";
+		Classe classe = null;
+
+		openTransaction();
+		classe = getOrPutInCache(classeRecherchee);
+		closeTransaction();
+		System.out.println("Classe : " + classe.getNom());
+
+		openTransaction();
+		classe = getOrPutInCache(classeRecherchee);
+
+		System.out.println("Classe : " + classe.getNom());
+		classe = entityManager.merge(classe);
+		afficherClasse(classe);
+		closeTransaction();
+	}
+
+	private Classe getOrPutInCache(String classeRecherchee) {
+		Classe classe;
 		if (!cache.containsKey(classeRecherchee)) {
-			classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='" + classeRecherchee + "'")
+			classe = (Classe) entityManager.createQuery("from Classe c where c.nom='" + classeRecherchee + "'")
 					.getSingleResult();
 			cache.put(classe.getNom(), classe);
 		} else {
@@ -86,9 +126,9 @@ public class P6PbCache2 {
 		return classe;
 	}
 
-	private void afficherClasse(ClasseP3 classe) {
+	private void afficherClasse(Classe classe) {
 		System.out.println("Classe : " + classe.getNom());
-		for (EleveP3 e : classe.getEleves()) {
+		for (Eleve e : classe.getEleves()) {
 			System.out.print("Eleve = " + e.getId() + " " + e.getNom() + "  ");
 		}
 
@@ -98,8 +138,6 @@ public class P6PbCache2 {
 
 	@Before
 	public void init() {
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
 		try {
 			entityManager = entityManagerFactory.createEntityManager();
 			transaction = entityManager.getTransaction();
@@ -107,17 +145,17 @@ public class P6PbCache2 {
 
 			int cptEleve = 0;
 			for (int i = 0; i < 6; i++) {
-				ClasseP3 c = new ClasseP3();
+				Classe c = new Classe();
 				c.setNom("classe" + i);
 
-				ProfesseurP3 p = new ProfesseurP3();
+				Professeur p = new Professeur();
 				p.setNom("Professeur" + i);
 
 				c.setProfesseur(p);
 
 				// c.setEleves();
 				for (int j = 0; j < 5; j++) {
-					EleveP3 e = new EleveP3();
+					Eleve e = new Eleve();
 					e.setNom("eleve" + cptEleve++);
 					c.addEleve(e);
 				}
