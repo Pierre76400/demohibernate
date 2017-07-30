@@ -15,9 +15,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.Level;
 import fr.softeam.dao.ProfesseurDao;
-import fr.softeam.model.variante.ClasseP3;
-import fr.softeam.model.variante.EleveP3;
-import fr.softeam.model.variante.ProfesseurP3;
+import fr.softeam.model.variante.ClasseP7;
+import fr.softeam.model.variante.EleveP7;
+import fr.softeam.model.variante.ProfesseurP7;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,19 +33,19 @@ public class P7CacheRequete {
 
 	private EntityTransaction transaction = null;
 
-	private ClasseP3 classe = null;
+	private ClasseP7 classe = null;
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void requeteSansCache() {
 
 		openTransaction();
-		classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'").getSingleResult();
+		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'").getSingleResult();
 		closeTransaction();
 		System.out.println("Classe : " + classe.getNom());
 
 		openTransaction();
-		classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'").getSingleResult();
+		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'").getSingleResult();
 		closeTransaction();
 		System.out.println("Classe : " + classe.getNom());
 	}
@@ -54,13 +54,13 @@ public class P7CacheRequete {
 	@SuppressWarnings("unchecked")
 	public void requeteAvecCache() {
 		openTransaction();
-		classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'")
+		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'")
 				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
 		closeTransaction();
 		System.out.println("Classe : " + classe.getNom());
 
 		openTransaction();
-		classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'")
+		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'")
 				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
 		closeTransaction();
 		System.out.println("Classe : " + classe.getNom());
@@ -72,13 +72,13 @@ public class P7CacheRequete {
 	@SuppressWarnings("unchecked")
 	public void requeteAvecCache_solution() {
 		openTransaction();
-		classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'")
+		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'")
 				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
 		closeTransaction();
 		System.out.println("Classe : " + classe.getNom());
 
 		openTransaction();
-		classe = (ClasseP3) entityManager.createQuery("from ClasseP3 c where c.nom='classe1'")
+		classe = (ClasseP7) entityManager.createQuery("from ClasseP7 c where c.nom='classe1'")
 				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
 		closeTransaction();
 		System.out.println("Classe : " + classe.getNom());
@@ -89,27 +89,27 @@ public class P7CacheRequete {
 	public void requeteAvecCacheOneToMany() {
 
 		openTransaction();
-		classe = (ClasseP3) entityManager
+		classe = (ClasseP7) entityManager
 				.createQuery(
-						"select distinct c from ClasseP3 c" + " join fetch c.eleves"
+						"select distinct c from ClasseP7 c" + " join fetch c.eleves"
 								+ " join fetch c.professeur where c.nom='classe1'")
 				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
 		closeTransaction();
 		afficherClasse(classe);
 
 		openTransaction();
-		classe = (ClasseP3) entityManager
+		classe = (ClasseP7) entityManager
 				.createQuery(
-						"select distinct c from ClasseP3 c" + " join fetch c.eleves"
+						"select distinct c from ClasseP7 c" + " join fetch c.eleves"
 								+ " join fetch c.professeur where c.nom='classe1'")
 				.setHint("org.hibernate.cacheable", Boolean.TRUE).getSingleResult();
 		afficherClasse(classe);
 		closeTransaction();
 	}
 
-	private void afficherClasse(ClasseP3 classe) {
+	private void afficherClasse(ClasseP7 classe) {
 		System.out.println("Classe : " + classe.getNom());
-		for (EleveP3 e : classe.getEleves()) {
+		for (EleveP7 e : classe.getEleves()) {
 			System.out.print("Eleve = " + e.getId() + " " + e.getNom() + "  ");
 		}
 
@@ -119,8 +119,6 @@ public class P7CacheRequete {
 
 	@Before
 	public void init() {
-		EntityManager entityManager = null;
-		EntityTransaction transaction = null;
 		try {
 			entityManager = entityManagerFactory.createEntityManager();
 			transaction = entityManager.getTransaction();
@@ -128,17 +126,17 @@ public class P7CacheRequete {
 
 			int cptEleve = 0;
 			for (int i = 0; i < 6; i++) {
-				ClasseP3 c = new ClasseP3();
+				ClasseP7 c = new ClasseP7();
 				c.setNom("classe" + i);
 
-				ProfesseurP3 p = new ProfesseurP3();
+				ProfesseurP7 p = new ProfesseurP7();
 				p.setNom("Professeur" + i);
 
 				c.setProfesseur(p);
 
 				// c.setEleves();
 				for (int j = 0; j < 5; j++) {
-					EleveP3 e = new EleveP3();
+					EleveP7 e = new EleveP7();
 					e.setNom("eleve" + cptEleve++);
 					c.addEleve(e);
 				}

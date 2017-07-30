@@ -1,7 +1,9 @@
-1- Execution du test => Il n'y aucun cache
+1- Execution du test => Il n'y aucun cache (4 requêtes) 
 
-2 - On a rajouté le cache de la requête mais cela ne semble pas marcher
-=> TODO : extrait de la définition du cache requête
+2 - On a rajouté le cache de la requête 
+=> .setHint("org.hibernate.cacheable", Boolean.TRUE)
+=> mais cela ne semble pas marcher
+=> extrait de la définition du cache requête
 
 3 - On rajoute 
 
