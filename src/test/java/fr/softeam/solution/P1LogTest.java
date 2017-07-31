@@ -17,7 +17,7 @@ public class P1LogTest extends AbstractCommonLanceurSansLogTest {
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("fr.softeam.solution")).setLevel(Level.ERROR);
 		Professeur prof1 = (Professeur) getEntityManager().createQuery("from Professeur where nom=?")
 				.setParameter(1, "Professeur1").getSingleResult();
-		System.out.println("Professeur avec l'id 1 : " + prof1.getNom());
+		System.out.println("Professeur avec l'id 1 : " + prof1.getNom() + "\n");
 
 		List<Professeur> profs = getEntityManager().createQuery("from Professeur").getResultList();
 		afficherListeDesProfesseurs(profs);
