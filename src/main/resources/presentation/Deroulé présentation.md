@@ -29,6 +29,7 @@ Passer le log "org.hibernate.type" au niveau DEBUG
 				
 
 5 - Lancer le test paramListe
+
 6 - Dupliquer le test paramListe
 
 6 - Passer en paramétre la liste
