@@ -48,8 +48,10 @@ Passer la relation ClasseP3.eleves à EAGER
 
 4- afficherLesClassesDUnProfesseurTest => 2 requête au lieu d'une
 
-5 - Solution repasser la relation ClasseP3.eleves à EAGER
+5 - Solution repasser la relation ClasseP3.eleves à LAZY
 Utiliser Fetch "from ClasseP3 c join fetch c.eleves where c.professeur..."
+
+6 - Présentation chargement tardif
 
 #P4 Insert
 1 - Lancement insertionDeTailleMoyenneTest
