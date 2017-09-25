@@ -8,8 +8,11 @@
 // reveal.js attributes
 :customcss: styles/myCustomCSS.css
 
+Pierre LEPLAY +
+icon:github[] https://github.com/Pierre76400/[GitHub] / icon:twitter[role="blue"] https://twitter.com/PierreLeplay[@PierreLeplay] +
+image:StarTECH-Java-logo_transparent-background.png[Logo StarTECH,150,150]
 
-== Qui suis je ?
+== Qui suis-je ?
 [%step]
 * *Développeur avec 15 ans d'expérience*
 * *Passionné de la veille technologie*
@@ -18,7 +21,7 @@
 == Petite histoire d'hibernate
 
 [%step]
-* *Hibernate est un ORM (Object Relational Mapping) crée par Gavin King en 2001.*
+* *Hibernate est un ORM (Object Relational Mapping) créé par Gavin King en 2001.*
 * *Il est destiné à simplifier le développement des applications CRUD*
 * *Souvent décrié*
 
@@ -31,7 +34,7 @@
 
 == Contexte technique de la démo
 * Spring boot 1.4 / Hibernate 5
-* Base embarqué : HSQLSB
+* Base embarquée : HSQLSB
 * Via des TU
 * Avec un jeu de test chargé à l’initialisation
 
@@ -52,7 +55,7 @@ Démo
 * Pour afficher les requêtes SQL générées : Dans le logger, passer le package org.hibernate.SQL à un niveau debug ou mettre la propriété hibernate « show_sql » à true
 * Pour formater la requête : Mettre la propriété hibernate « format_sql » à true
 * Pour indiquer la provenance de la requête : Mettre la propriété hibernate « use_sql_comments » à true
-* Pour indiquer les paramètres de la requête : Dans le logger passer le package org.hibernate.type au niveau trace
+* Pour afficher les paramètres de la requête : Dans le logger passer le package org.hibernate.type au niveau trace
 
 
 
@@ -73,12 +76,12 @@ Démo
 
 Démo
 
-=== Le chargement des entity: conclusions
+=== Le chargement des entity : conclusions
 
 [%step]
-* L'option « enable_lazy_load_no_trans » Mauvaise pratique car crée une nouvelle session temporaire à chaque fois que l'on charge une entity « Lazy »
+* L'option « enable_lazy_load_no_trans » Mauvaise pratique car elle crée une nouvelle session temporaire à chaque fois que l'on charge une entity « Lazy »
 * Le type de chargement « eager » entraîne le problème des requêtes « n+1 »
-* Le type de chargement « eager » est très dur a désactiver contrairement au « Lazy »
+* Le type de chargement « eager » est très dur à désactiver contrairement au « Lazy »
 
 
 == 4 - Un problème dans un batch d'insertion massive
@@ -114,7 +117,7 @@ Démo
 === Les problématiques de cache : conclusions
 
 [%step]
-* Une requête « Native SQL » est exécuté immédiatement
+* Une requête « Native SQL » est exécutée immédiatement
 * Une requête « Native SQL » ne gère pas le cache
 * On peut rafraichir manuellement une entity via getEntityManager().refresh(e);
 * On peut synchroniser la session avec la base de donnée via un flush : getEntityManager().flush();
@@ -143,21 +146,11 @@ image:schemaEtatEntity.PNG[width=700]
 
 Démo
 
-=== Extrait de la doc. Hibernate sur le cache de requête : 
-
-« The query cache does not cache the state of the actual entities in the cache; it caches only identifier values and results of value type. For this reaso, the query cache should always be used in conjunction with the second-level cache for those entities expected to be cached as part of a query result cache (just as with collection caching) »
-
-=== Extrait de la doc. Hibernate sur le cache : 
-« Hibernate stores cached entities in a dehydrated form, which is similar to the database representation. Aside from the foreign key column values of the @ManyToOne or @OneToOne child-side associations, entity relationships are not stored in the cache »
-
-=== Extrait de la doc. Hibernate sur le cache des collections :
-« Hibernate can also cache collections, and the @Cache annotation must be on added to the collection property. »
-If the collection is made of value types (basic or embeddables mapped with @ElementCollection), the collection is stored as such. If the collection contains other entities (@OneToMany or @ManyToMany), the collection cache entry will store the entity identifiers only
-
 === Cache pour les requêtes : conclusions
 
 [%step]
-* Seuls les type primitifs et les objet simples sont mis en cache, pas les collections.
+* Le cache sur les requêtes , stocke uniquement les identifiants des entitys et non l'entity  
+* Seuls les type primitifs et les objets simples sont mis en cache, pas les collections.
 * On peut rajouter des caches sur ces collections.
 
 
@@ -179,8 +172,8 @@ Hibernate guarantees equivalence of persistent identity (database row) and Java 
 
 
 === Règles d'or pour les hashcode
-- On ne peut pas utiliser la méthode equals d'Object  , car une même entity chargée dans 2 sessions différentes donneront 2 instances différentes
-- On ne peut pas utiliser l'id technique car si l'entity n’est pas persisté elle n'a pas d'id technique
+- On ne peut pas utiliser la méthode equals d'Object  , car un même entity chargé dans 2 sessions différentes donneront 2 instances différentes
+- On ne peut pas utiliser l'id technique car si l'entity n’est pas persisté, il n'a pas d'id technique
 - Il faut utiliser une clé métier
 - Dans la méthode equals , il ne faut pas comparer les classes mais simplement s'il instancie la classe de l'entity à cause des proxy.
 
