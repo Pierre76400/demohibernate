@@ -83,13 +83,21 @@ public class P4BatchInsertTest extends AbstractCommonLanceurTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void insertionMassiveTest_explicationCache() {
-		long idProf = creerClasseAvecProfesseurEtEleves(0).getId();
+		Classe c = creerClasseAvecProfesseurEtEleves(0);
+		getEntityManager().persist(c);
+		getEntityManager().flush();
+
+		getEntityManager().refresh(c);
+		long idProf = c.getProfesseur().getId();
+		getEntityManager().clear();
+
 		((ch.qos.logback.classic.Logger) LoggerFactory.getLogger("org.hibernate.SQL")).setLevel(Level.DEBUG);
 
 		System.out.println("1ére requête :");
 
 		getEntityManager().find(Professeur.class, idProf);
 
+		getEntityManager().find(Professeur.class, idProf);
 		System.out.println("2éme requête avec un clear avant :");
 
 		getEntityManager().clear();
