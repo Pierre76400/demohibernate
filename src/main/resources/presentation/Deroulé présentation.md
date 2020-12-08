@@ -12,11 +12,11 @@ dans le fichier "application.porperties" passer spring.jpa.properties.hibernate.
 spring.jpa.properties.hibernate.use_sql_comments à true
 
 5- Afficher paramétre
-Passer le log "org.hibernate.type" au niveau DEBUG
+Passer le log "org.hibernate.type" au niveau TRACE
 
 #P2 Paramétres
 
-1- Premier test (sans utiliser de paramétre)
+1- Premier test (sans utiliser de paramétre) => Afficher requête Sql
 
 2- Test en changeant le paramétre à "'"
 
@@ -32,7 +32,7 @@ Passer le log "org.hibernate.type" au niveau DEBUG
 
 6 - Dupliquer le test paramListe
 
-6 - Passer en paramétre la liste
+7 - Passer en paramétre la liste
 createQuery("from Classe c left join fetch c.professeur where c.professeur.nom  in (:nomProfesseurs)")
 				.setParameter("nomProfesseurs", nomProfesseurs).getResultList();
 
@@ -46,10 +46,11 @@ createQuery("from Classe c left join fetch c.professeur where c.professeur.nom  
 3- Désactiver l'option "enable_lazy_load_no_trans"
 Passer la relation ClasseP3.eleves à EAGER
 
-4- afficherLesClassesDUnProfesseurTest => 2 requête au lieu d'une
+4- afficherLesClassesDUnProfesseurTest => 2 requêtes au lieu d'une
 
 5 - Solution repasser la relation ClasseP3.eleves à LAZY
 Utiliser Fetch "from ClasseP3 c join fetch c.eleves where c.professeur..."
+color:green (Passer classe P3.professor en lazy)
 
 6 - Présentation chargement tardif
 
@@ -59,6 +60,7 @@ Utiliser Fetch "from ClasseP3 c join fetch c.eleves where c.professeur..."
 
 2 - Lancement insertionMassiveTest
 => Ne répond pas ? Pourquoi ? 100 000 enregistrement devrait durer dix fois plus de temps que le précédent
+color:green Fusionner les 2 tests (2 et 3)
 
 3 - On rajout des traces dans le précédent test tout les 10 000 enregistrements
 
@@ -97,6 +99,7 @@ Solution faire un flush aprés le persist et ajouter un refresh
 
 3 - On doit afficher la classe et ses éléves  (afficherClasse(classe);)
 => Cela ne marche plus , pourtrant on a bien une session
+=> Présentation des différents états
 
 4- Une solution  , réattacher l'entity à la session
 classe = entityManager.merge(classe);
